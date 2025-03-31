@@ -2,10 +2,19 @@
     <x-slot name="header">
         <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
+            
             <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                href="{{ route('advertisements.create') }}">
                 {{ __('Maak advertenties') }}
             </a>
+            @auth
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-red-600 font-bold hover:underline">
+                    Logout
+                </button>
+            </form>
+            @endauth
         </h2>
     </x-slot>
     <h1 class="text-xl font-bold">Welcome, {{ auth()->user()->name }}!</h1>

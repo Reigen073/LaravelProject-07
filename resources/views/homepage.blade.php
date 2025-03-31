@@ -7,9 +7,16 @@
             <h2 class="font-bold text-2xl text-gray-900 leading-tight">
                 Laatste Advertenties
             </h2>
-            <h2 class="font-bold text-2xl text-gray-900 leading-tight">
-                Profiel
-            </h2>
+            <div class="flex items-center space-x-4">
+                @auth
+                    <a href="{{ route('login') }}" class="text-blue-600 font-bold hover:underline">
+                        Login
+                    </a>
+                    <a href="{{ route('register') }}" class="text-blue-600 font-bold hover:underline">
+                        Register
+                    </a>
+                @endauth
+            </div>
         </div>
     </x-slot>
 
@@ -22,9 +29,6 @@
                             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ $ad->title }}</h2>
                             <p class="text-gray-700 mb-3">{{ $ad->description }}</p>
                             <p class="text-lg font-bold">€{{ number_format($ad->price, 2, ',', '.') }}</p>
-                            @if($ad->user)
-                                <p class="text-sm text-gray-500 mt-2">Geplaatst door: <span class="font-medium">{{ $ad->user->name }}</span></p>
-                            @endif
                         </div>
                     </a>
                 @endforeach

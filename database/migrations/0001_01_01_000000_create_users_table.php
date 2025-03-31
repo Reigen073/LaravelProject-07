@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
+            $table->string('name'); // User's name
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['gebruiker', 'particulier_adverteerder', 'zakelijke_adverteerder']);
