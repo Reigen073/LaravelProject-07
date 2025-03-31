@@ -53,5 +53,9 @@ class User extends Authenticatable
     }
     public $incrementing = true; 
     protected $keyType = 'int';
-
+    public function favorites()
+    {
+        return $this->belongsToMany(Advertisement::class, 'favorites')->withTimestamps();
+    }
+    
 }

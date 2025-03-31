@@ -30,6 +30,18 @@
                 @if($advertisement->user)
                     <p class="text-sm text-gray-500 mt-1">Geplaatst door: <span class="font-medium">{{ $advertisement->user->name }}</span></p>
                 @endif
+                @auth
+                <form action="{{ route('advertisements.favorite', $advertisement->id) }}" method="POST" class="mt-4">
+                    @csrf
+                    <button type="submit" class="text-red-500 font-bold">
+                        @if(auth()->user()->favorites->contains($advertisement->id))
+                            ❤️ Verwijder Favoriet
+                        @else
+                            🤍 Toevoegen aan Favorieten
+                        @endif
+                    </button>
+                </form>
+            @endauth
             </div>
         </div>
     </div>
