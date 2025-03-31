@@ -18,8 +18,8 @@ jobs:
 
     strategy:
       fail-fast: true
-      matrix:
-        php: [8.5]
+      # matrix:
+      #   php: 
 
     name: PHP ${{ matrix.php }}
 
