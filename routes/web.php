@@ -2,13 +2,24 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdvertisementController;
+use App\Models\Advertisement;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [AdvertisementController::class, 'index'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/advertisements/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
+    Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');
+    Route::get('/advertisements/{id}', [AdvertisementController::class, 'info'])->name('advertisements.info');
+    Route::get('/dashboard', [AdvertisementController::class, 'userAdvertisements'])->name('user.advertisements');
+    Route::get('/advertisements/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('advertisements.edit');
+    Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update'])->name('advertisements.update');
+    Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
+    return view('dashboard', compact('advertisements'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
