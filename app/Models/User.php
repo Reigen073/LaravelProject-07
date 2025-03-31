@@ -45,18 +45,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public $incrementing = false; // Zorgt ervoor dat UUID werkt als primary key
-    protected $keyType = 'string';
+
     // Automatically hash password before saving
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
     }
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid(); // Genereert automatisch een UUID voor nieuwe gebruikers
-        });
-    }
+    public $incrementing = true; 
+    protected $keyType = 'int';
+
 }
