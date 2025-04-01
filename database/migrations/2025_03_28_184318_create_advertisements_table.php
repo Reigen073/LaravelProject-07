@@ -18,10 +18,13 @@ return new class extends Migration
             $table->text('description');
             $table->integer('price');
             $table->string('category');
+            $table->enum('type', ['buy', 'rent', 'bidding'])->default('buy');
             $table->enum('status', ['available', 'rented', 'sold'])->default('available');
             $table->string('qr_code')->nullable();
             $table->string('image')->nullable(); 
             $table->enum('condition', ['new', 'used', 'refurbished'])->default('used');
+            $table->date('expires_at')->nullable();
+            $table->integer('acquirer_user_id')->nullable();
             $table->timestamps();
         });
     }

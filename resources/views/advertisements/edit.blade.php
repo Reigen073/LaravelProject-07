@@ -37,6 +37,15 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2">Type</label>
+                        <select name="type" class="w-full border rounded-lg p-2" required>
+                            <option value="buy" {{ $advertisement->type == 'buy' ? 'selected' : '' }}>Koop</option>
+                            <option value="rent" {{ $advertisement->type == 'rent' ? 'selected' : '' }}>Verhuur</option>
+                            <option value="bidding" {{ $advertisement->type == 'bidding' ? 'selected' : '' }}>Bieden</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Status</label>
                         <select name="status" class="w-full border rounded-lg p-2" required>
                             <option value="available" {{ $advertisement->status == 'available' ? 'selected' : '' }}>Beschikbaar</option>
@@ -68,6 +77,11 @@
                         <input type="text" name="qr_code" value="{{ $advertisement->qr_code }}" class="w-full border rounded-lg p-2">
                     </div>
 
+                    <div class="mt-4">
+                        <label for="expires_at">Verloopt op</label>
+                        <input type="date" name="expires_at" value="{{ $advertisement->expires_at }}" class="block w-full border p-2" required>
+                    </div>
+
                     <div class="flex justify-between mt-4">
                         <a href="{{ url()->previous() }}"
                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -80,8 +94,7 @@
                     </div>
                 </form>
                 <form method="POST" action="{{ route('advertisements.destroy', $advertisement->id) }}" 
-                    class="mt-4"
-                    onsubmit="return confirm('Weet je zeker dat je deze advertentie wilt verwijderen?');">
+                    class="mt-4">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 

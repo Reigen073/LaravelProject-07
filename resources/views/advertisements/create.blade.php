@@ -34,6 +34,15 @@
                 </div>
 
                 <div class="mt-4">
+                    <label for="type">Type</label>
+                    <select name="type" id="type" class="block w-full border p-2" required>
+                        <option value="buy">Koop</option>
+                        <option value="rent">Verhuur</option>
+                        <option value='bidding'>Bieden</option>
+                    </select>
+                </div>
+
+                <div class="mt-4">
                     <label for="status">Status</label>
                     <select name="status" id="status" class="block w-full border p-2" required>
                         <option value="available">Beschikbaar</option>
@@ -61,6 +70,10 @@
                     <input type="text" name="qr_code" id="qr_code" class="block w-full border p-2">
                 </div>
 
+                <div class="mt-4">
+                    <label for="expires_at">Verloopt op</label>
+                    <input type="date" name="expires_at" id="expires_at" class="block w-full border p-2" required>
+                </div>
                 <div class="mt-4">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Plaatsen</button>
                 </div>
