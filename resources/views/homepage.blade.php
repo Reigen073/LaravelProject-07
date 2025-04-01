@@ -9,6 +9,12 @@
             </h2>
             <div class="flex items-center space-x-4">
                 @auth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-red-600 font-bold hover:underline">
+                        Logout
+                    </button>
+                </form>
                     <a href="{{ route('login') }}" class="text-blue-600 font-bold hover:underline">
                         Login
                     </a>
@@ -23,6 +29,7 @@
     <div class="py-10 bg-gray-100">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                
                 @foreach ($advertisements as $ad)
                     <a href="{{ route('advertisements.info', $ad->id) }}" class="block">
                         <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-6 transition-transform transform hover:scale-105">
