@@ -3,18 +3,21 @@
         <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
             
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-               href="{{ route('advertisements.create') }}">
-                {{ __('Maak advertenties') }}
-            </a>
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-               href="{{ route('advertisements.agenda') }}">
-                {{ __('Bekijk advertenties in agenda') }}
-            </a>
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-               href="{{ route('advertisements.history') }}">
-                {{ __('Gekochte producten') }}
-            </a>
+            <div class="flex gap-2">
+                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                   href="{{ route('advertisements.create') }}">
+                    {{ __('Maak advertenties') }}
+                </a>
+                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                   href="{{ route('advertisements.agenda') }}">
+                    {{ __('Bekijk advertenties in agenda') }}
+                </a>
+                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                   href="{{ route('advertisements.history') }}">
+                    {{ __('Gekochte producten') }}
+                </a>
+            </div>
+
             @auth
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -26,10 +29,12 @@
         </h2>
     </x-slot>
 
-    <h1 class="text-xl font-bold">Welcome, {{ auth()->user()->name }}!</h1>
+    <h1 class="text-xl font-bold mb-4">Welcome, {{ auth()->user()->name }}!</h1>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
+
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Jouw Advertenties -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -56,10 +61,15 @@
                                             </a>
                                         @endif
                                     </div>
-                                    
                                 </div>
                             @endforeach
                         </div>
+
+            <!-- Pagination Links -->
+            <div class="mt-6">
+                {{ $advertisements->appends(request()->input())->links() }}
+            </div>
+            
                     @else
                         <p>Je hebt nog geen advertenties geplaatst.</p>
                     @endif

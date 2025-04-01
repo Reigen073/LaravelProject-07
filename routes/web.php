@@ -34,8 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/register', [RegisterController::class, 'show'])->name('register');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggleFavorite'])->middleware('auth')->name('advertisements.favorite');
+Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
+Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
+Route::get('/favorites', [AdvertisementController::class, 'favorites'])->name('favorites');
 
 require __DIR__.'/auth.php';
