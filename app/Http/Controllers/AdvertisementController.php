@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use App\Models\Bidding;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdvertisementController extends Controller
 {
@@ -27,6 +28,7 @@ class AdvertisementController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'title' => 'required|string|max:150',
             'description' => 'required|string',
@@ -35,13 +37,12 @@ class AdvertisementController extends Controller
             'type' => 'required|in:buy,rent,bidding',
             'status' => 'required|in:available,rented,sold',
             'condition' => 'required|in:new,used,refurbished',
-            'qr_code' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'expires_at' => 'required|date|after:today',
             'acquirer_user_id' => 'nullable|exists:users,id',
         ]);
     
-        Advertisement::create([
+        $advertisement = Advertisement::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'description' => $request->description,
@@ -50,14 +51,23 @@ class AdvertisementController extends Controller
             'category' => $request->category,
             'status' => $request->status,
             'condition' => $request->condition,
-            'qr_code' => $request->qr_code,
             'image' => $request->file('image') ? $request->file('image')->store('images', 'public') : null,
             'expires_at' => $request->expires_at,
             'acquirer_user_id' => $request->acquirer_user_id,
         ]);
 
+        $advertisement->qr_code = $this->generateQrCode($advertisement);
+        $advertisement->save();
+
         return redirect('dashboard')->with('success', 'Advertentie geplaatst!');
     }
+
+    public function generateQrCode($advertisement)
+    {
+        $url = url('/advertisements/' . $advertisement->id);
+        return QrCode::size(100)->generate($url);
+    }
+
     public function userAdvertisements()
     {
         $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();

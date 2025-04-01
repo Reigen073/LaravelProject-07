@@ -72,11 +72,6 @@
                         @endif
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">QR Code</label>
-                        <input type="text" name="qr_code" value="{{ $advertisement->qr_code }}" class="w-full border rounded-lg p-2">
-                    </div>
-
                     <div class="mt-4">
                         <label for="expires_at">Verloopt op</label>
                         <input type="date" name="expires_at" value="{{ $advertisement->expires_at }}" class="block w-full border p-2" required>

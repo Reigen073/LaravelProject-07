@@ -32,6 +32,7 @@
                 @if($advertisement->user)
                     <p class="text-sm text-gray-500 mt-1">Geplaatst door: <span class="font-medium">{{ $advertisement->user->name }}</span></p>
                 @endif
+                <p class="text-sm text-gray-500 mt-1">QR-Code: <span class="font-medium">{!! $advertisement->qr_code !!}</span></p>
                 
                 @if($advertisement->status === 'available' && $advertisement->type === 'buy')
                     <form method="POST" action="{{ route('advertisements.buy', $advertisement->id) }}" 

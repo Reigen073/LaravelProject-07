@@ -66,11 +66,6 @@
                 </div>
 
                 <div class="mt-4">
-                    <label for="qr_code">QR Code</label>
-                    <input type="text" name="qr_code" id="qr_code" class="block w-full border p-2">
-                </div>
-
-                <div class="mt-4">
                     <label for="expires_at">Verloopt op</label>
                     <input type="date" name="expires_at" id="expires_at" class="block w-full border p-2" required>
                 </div>
