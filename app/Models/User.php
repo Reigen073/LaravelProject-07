@@ -54,4 +54,13 @@ class User extends Authenticatable
     public $incrementing = true; 
     protected $keyType = 'int';
 
+    public function reviewsReceived()
+    {
+        return $this->hasMany(Review::class, 'advertiser_id');
+    }
+    public function advertisements()
+    {
+        return $this->hasMany(Advertisement::class);
+    }
+
 }
