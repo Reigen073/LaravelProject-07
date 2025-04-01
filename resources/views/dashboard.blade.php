@@ -11,6 +11,10 @@
                href="{{ route('advertisements.agenda') }}">
                 {{ __('Bekijk advertenties in agenda') }}
             </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.history') }}">
+                {{ __('Gekochte producten') }}
+            </a>
             @auth
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

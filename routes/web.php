@@ -9,6 +9,7 @@ use App\Models\Advertisement;
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/advertisements/history',[AdvertisementController::class, 'history'])->name('advertisements.history');
     Route::get('/advertisements/agenda', [AdvertisementController::class, 'agenda'])->name('advertisements.agenda');
     Route::get('/advertisements/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
     Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');

@@ -194,7 +194,14 @@ class AdvertisementController extends Controller
     
         return redirect()->route('home')->with('success', 'Bod succesvol geplaatst!');
     }
-    
 
+    public function history(){
+        $user = auth()->user();
+        $advertisements = Advertisement::where('acquirer_user_id', $user->id)
+            ->where('status', 'sold')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
+        return view('advertisements.history', compact('advertisements'));
+    }
 }
