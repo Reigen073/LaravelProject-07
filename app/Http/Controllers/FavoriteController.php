@@ -7,6 +7,16 @@ use App\Models\Advertisement;
 
 class FavoriteController extends Controller
 {
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+
+        // Eager load the advertisement relationship
+        $favorites = $user->favorites()->with('advertisement')->paginate(6);
+    
+        return view('favorites.index', compact('favorites'));
+    }
+
     public function toggleFavorite($id)
     {
         $advertisement = Advertisement::findOrFail($id);
@@ -20,5 +30,11 @@ class FavoriteController extends Controller
             return back()->with('success', 'Advertentie toegevoegd aan favorieten.');
         }
     }
+    public function advertisement()
+{
+    return $this->belongsTo(Advertisement::class);
+}
+
+    
 }
 

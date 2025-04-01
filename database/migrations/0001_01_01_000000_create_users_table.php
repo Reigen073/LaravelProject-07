@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name'); // User's name
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['gebruiker', 'particulier_adverteerder', 'zakelijke_adverteerder']);
+            $table->enum('role', [ 'particulier_adverteerder', 'zakelijke_adverteerder']);
             $table->rememberToken();
             $table->timestamps();
         });
