@@ -4,7 +4,13 @@
             Nieuwe Advertentie
         </h2>
     </x-slot>
-
+     @if (session('error'))
+        <div class="flex justify-center">
+            <div class="bg-red-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                {{ session('error') }}
+            </div>
+        </div>
+        @endif
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <form method="POST" action="/advertisements" enctype="multipart/form-data"> <!-- enctype voor bestand uploaden -->
