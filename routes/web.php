@@ -9,13 +9,17 @@ use App\Models\Advertisement;
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/advertisements/history',[AdvertisementController::class, 'history'])->name('advertisements.history');
+    Route::get('/advertisements/agenda', [AdvertisementController::class, 'agenda'])->name('advertisements.agenda');
     Route::get('/advertisements/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
     Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');
     Route::get('/advertisements/{id}', [AdvertisementController::class, 'info'])->name('advertisements.info');
-    Route::get('/dashboard', [AdvertisementController::class, 'userAdvertisements'])->name('user.advertisements');
     Route::get('/advertisements/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('advertisements.edit');
     Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update'])->name('advertisements.update');
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
+    Route::post('/advertisements/{advertisement}',[AdvertisementController::class, 'buy'])->name('advertisements.buy'); 
+    Route::post('/advertisements/{advertisement}/rent',[AdvertisementController::class, 'rent'])->name('advertisements.rent');
+    Route::post('/advertisements/{advertisement}/bidding',[AdvertisementController::class, 'bidding'])->name('advertisements.bidding');
 });
 
 Route::get('/dashboard', function () {

@@ -7,6 +7,14 @@
                href="{{ route('advertisements.create') }}">
                 {{ __('Maak advertenties') }}
             </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.agenda') }}">
+                {{ __('Bekijk advertenties in agenda') }}
+            </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.history') }}">
+                {{ __('Gekochte producten') }}
+            </a>
             @auth
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -17,13 +25,12 @@
             @endauth
         </h2>
     </x-slot>
-    <h1 class="text-xl font-bold">Welcome, {{ auth()->user()->name }}!</h1>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    {{ __("Je bent ingelogd!") }}
+                Welcome, {{ auth()->user()->name }}!
                 </div>
             </div>
 
