@@ -15,10 +15,15 @@ class Advertisement extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function biddings()
     {
         return $this->hasMany(Bidding::class);
+    }
+    
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
 }
