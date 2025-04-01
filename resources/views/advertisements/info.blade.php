@@ -8,9 +8,6 @@
     <div class="py-10 bg-gray-100">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-6">
-                <div class="">
-                    <a href="{{ url()->previous() }}" class="text-blue-500 hover:underline">← Terug naar overzicht</a>
-                </div>
                 @if ($advertisement->image)
                     <img src="{{ asset('storage/' . $advertisement->image) }}" 
                         alt="{{ $advertisement->title }}" 
@@ -76,6 +73,28 @@
                 </form>
                 @endif
             </div>
+                <form method="POST" action="{{ route('reviews.store', $advertisement->id) }}" class="mt-4 bg-white rounded-2xl shadow-md p-4 border border-gray-200">
+                    @csrf
+                    <textarea name="comment" class="border p-2 w-full rounded-lg" placeholder="Schrijf een review..." required></textarea>
+                    <input type="hidden" name="type" value="advertisement">
+                    <select name="rating" class="border p-2 mt-2 w-full rounded-lg" required>
+                        <option value="1">1 - Slecht</option>
+                        <option value="2">2 - Matig</option>
+                        <option value="3">3 - Goed</option>
+                        <option value="4">4 - Zeer goed</option>
+                        <option value="5">5 - Uitstekend</option>
+                    </select>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mt-2">
+                        Review Plaatsen
+                    </button>
+                </form>
+                @foreach($advertisement->reviews as $review)
+                    <div class="bg-white rounded-2xl shadow-md p-4 mt-4 border border-gray-200">
+                        <p class="text-sm text-gray-500">Gepubliceerd door: <span class="font-medium">{{ $review->user->name }}</span></p>
+                        <p class="text-lg font-semibold text-gray-900">Rating: <span class="text-yellow-500">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</span></p>
+                        <p class="text-gray-700 mt-2">{{ $review->comment }}</p>
+                    </div>
+                @endforeach
         </div>
     </div>
 </x-app-layout>

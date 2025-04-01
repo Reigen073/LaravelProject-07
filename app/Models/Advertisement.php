@@ -24,6 +24,11 @@ class Advertisement extends Model
     {
         return $this->hasMany(Bidding::class);
     }
+    
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
     public function toggleFavorite(Advertisement $advertisement)
     {

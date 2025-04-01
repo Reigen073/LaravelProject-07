@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\ReviewController;
 use App\Models\Advertisement;
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
@@ -23,6 +24,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/advertisements/{advertisement}/bidding',[AdvertisementController::class, 'bidding'])->name('advertisements.bidding');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/reviews/{id}', [ReviewController::class, 'store'])->name('reviews.store');
+});
+
 Route::get('/dashboard', function () {
     $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
     return view('dashboard', compact('advertisements'));
@@ -35,6 +40,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggleFavorite'])->middleware('auth')->name('advertisements.favorite');
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');

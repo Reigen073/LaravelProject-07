@@ -90,7 +90,6 @@ class AdvertisementController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'title' => 'required|string|max:150',
             'description' => 'required|string',
@@ -100,12 +99,23 @@ class AdvertisementController extends Controller
             'status' => 'required|in:available,rented,sold',
             'condition' => 'required|in:new,used,refurbished',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'expires_at' => 'required|date|after:today',
-            'acquirer_user_id' => 'nullable|exists:users,id',
+            'expires_at' => 'required|date',
         ]);
-    
+
+        if (strtotime($request->expires_at) <= strtotime(now()->toDateString())) {
+            return redirect()->back()->with('error', 'De vervaldatum moet na vandaag liggen.');
+        }
+        $user = auth()->user();
+        $advertisementCount = Advertisement::where('user_id', $user->id)
+            ->where('type', $request->type)
+            ->count();
+
+        if ($advertisementCount >= 4) {
+            return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties van elk type hebben.');
+        }
+
         $advertisement = Advertisement::create([
-            'user_id' => auth()->id(),
+            'user_id' => $user->id,
             'title' => $request->title,
             'description' => $request->description,
             'price' => $request->price,
@@ -115,7 +125,6 @@ class AdvertisementController extends Controller
             'condition' => $request->condition,
             'image' => $request->file('image') ? $request->file('image')->store('images', 'public') : null,
             'expires_at' => $request->expires_at,
-            'acquirer_user_id' => $request->acquirer_user_id,
         ]);
 
         $advertisement->qr_code = $this->generateQrCode($advertisement);
@@ -123,6 +132,7 @@ class AdvertisementController extends Controller
 
         return redirect('dashboard')->with('success', 'Advertentie geplaatst!');
     }
+
 
     public function generateQrCode($advertisement)
     {
