@@ -6,33 +6,29 @@ use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use App\Models\Bidding;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Middleware\RoleCheck;
 
 class AdvertisementController extends Controller
 {
     public function index(Request $request)
     {
-        // Start query for advertisements
         $query = Advertisement::query();
-        // Apply title filter if a search term is provided
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-        // Apply category filter if provided
+
         if ($request->has('category') && $request->category) {
             $query->where('category', $request->category);
         }
 
-        // Apply condition filter if provided
         if ($request->has('condition') && $request->condition) {
             $query->where('condition', $request->condition);
         }
 
-        // Apply status filter if provided
         if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
 
-        // Apply sorting if provided
         if ($request->has('sort') && $request->sort) {
             switch ($request->sort) {
                 case 'price_asc':
@@ -48,14 +44,13 @@ class AdvertisementController extends Controller
                     $query->orderBy('title', 'desc');
                     break;
                 default:
-                    $query->latest();  // Default sorting: latest first
+                    $query->latest(); 
                     break;
             }
         } else {
-            $query->latest();  // Default sorting: latest first
+            $query->latest(); 
         }
 
-        // Paginate results
         $advertisements = $query->paginate(9);
 
         return view('homepage', compact('advertisements'));
@@ -63,17 +58,15 @@ class AdvertisementController extends Controller
 
     public function dashboard(Request $request)
     {
-        // Start query for advertisements
-        $query = Advertisement::query();
+        // $query = Advertisement::query();
+
+        // if ($request->has('search') && $request->search) {
+        //     $query->where('title', 'like', '%' . $request->search . '%');
+        // }
+        // $advertisements = $query->paginate(6);
     
-        // Apply title filter if a search term is provided
-        if ($request->has('search') && $request->search) {
-            $query->where('title', 'like', '%' . $request->search . '%');
-        }
-    
-        // Paginate results with 6 items per page
-        $advertisements = $query->paginate(6);
-    
+        // return view('dashboard', compact('advertisements'));
+        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->paginate(6);
         return view('dashboard', compact('advertisements'));
     }
     

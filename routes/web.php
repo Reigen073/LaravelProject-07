@@ -8,6 +8,7 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Advertisement;
 use App\Http\Controllers\ReturnController;
+use App\Http\Middleware\RoleCheck;
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
 
@@ -24,6 +25,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/advertisements/{advertisement}/rent',[AdvertisementController::class, 'rent'])->name('advertisements.rent');
     Route::post('/advertisements/{advertisement}/bidding',[AdvertisementController::class, 'bidding'])->name('advertisements.bidding');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::middleware([RoleCheck::class . ':particulier_adverteerder,zakelijke_adverteerder'])->group(function () {
+    Route::get('/advertisements/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
+    Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');
+    Route::get('/advertisements/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('advertisements.edit');
+    Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update'])->name('advertisements.update');
+    Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
+    });
+});
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/reviews/{id}', [ReviewController::class, 'store'])->name('reviews.store');
@@ -50,7 +63,7 @@ Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggleFavorite'])->middleware('auth')->name('advertisements.favorite');
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
-Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
+// Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
 Route::get('/favorites', [AdvertisementController::class, 'favorites'])->name('favorites');
 
 require __DIR__.'/auth.php';
