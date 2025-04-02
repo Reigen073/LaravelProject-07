@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'id','name', 'email', 'password', 'role'
+        'name', 'email', 'password', 'role'
     ];
 
     /**
@@ -62,5 +62,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Advertisement::class);
     }
-
+    public function favorites()
+    {
+        return $this->belongsToMany(Advertisement::class, 'favorites', 'user_id', 'advertisement_id')
+                    ->withTimestamps();
+    }
+    
+    
 }

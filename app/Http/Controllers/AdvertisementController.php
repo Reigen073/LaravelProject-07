@@ -9,12 +9,74 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdvertisementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $advertisements = Advertisement::latest()->take(10)->get();
+        // Start query for advertisements
+        $query = Advertisement::query();
+        // Apply title filter if a search term is provided
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+        // Apply category filter if provided
+        if ($request->has('category') && $request->category) {
+            $query->where('category', $request->category);
+        }
+
+        // Apply condition filter if provided
+        if ($request->has('condition') && $request->condition) {
+            $query->where('condition', $request->condition);
+        }
+
+        // Apply status filter if provided
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        // Apply sorting if provided
+        if ($request->has('sort') && $request->sort) {
+            switch ($request->sort) {
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'title_asc':
+                    $query->orderBy('title', 'asc');
+                    break;
+                case 'title_desc':
+                    $query->orderBy('title', 'desc');
+                    break;
+                default:
+                    $query->latest();  // Default sorting: latest first
+                    break;
+            }
+        } else {
+            $query->latest();  // Default sorting: latest first
+        }
+
+        // Paginate results
+        $advertisements = $query->paginate(9);
+
         return view('homepage', compact('advertisements'));
     }
 
+    public function dashboard(Request $request)
+    {
+        // Start query for advertisements
+        $query = Advertisement::query();
+    
+        // Apply title filter if a search term is provided
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+    
+        // Paginate results with 6 items per page
+        $advertisements = $query->paginate(6);
+    
+        return view('dashboard', compact('advertisements'));
+    }
+    
     public function create()
     {
         return view('advertisements.create');
@@ -224,4 +286,10 @@ class AdvertisementController extends Controller
 
         return view('advertisements.history', compact('advertisements'));
     }
+    public function favorites()
+    {
+        $favorites = auth()->user()->favorites()->latest()->paginate(9);
+        return view('advertisements.favorites', compact('favorites'));
+    }
+
 }

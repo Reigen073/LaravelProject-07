@@ -1,52 +1,68 @@
-<x-guest-layout>
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Registreren
+        </h2>
+    </x-slot>
 
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Naam</label>
+                    <input type="text" name="name" id="name" class="block w-full border p-2 mt-1" value="{{ old('name') }}" required autofocus>
+                    @error('name')
+                        <div class="mt-2 text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Email -->
+                <div class="mt-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" class="block w-full border p-2 mt-1" value="{{ old('email') }}" required>
+                    @error('email')
+                        <div class="mt-2 text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div class="mt-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Wachtwoord</label>
+                    <input type="password" name="password" id="password" class="block w-full border p-2 mt-1" required>
+                    @error('password')
+                        <div class="mt-2 text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mt-4">
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Bevestig Wachtwoord</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="block w-full border p-2 mt-1" required>
+                    @error('password_confirmation')
+                        <div class="mt-2 text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Role Selection -->
+                <div class="mt-4">
+                    <label for="role" class="block text-sm font-medium text-gray-700">Rol</label>
+                    <select name="role" id="role" class="block w-full border p-2 mt-1" required>
+                        <option value="gebruiker" {{ old('role') == 'gebruiker' ? 'selected' : '' }}>Gebruiker</option>
+                        <option value="particulier_adverteerder" {{ old('role') == 'particulier_adverteerder' ? 'selected' : '' }}>Particuliere Adverteerder</option>
+                        <option value="zakelijke_adverteerder" {{ old('role') == 'zakelijke_adverteerder' ? 'selected' : '' }}>Zakelijke Adverteerder</option>
+                    </select>
+                    @error('role')
+                        <div class="mt-2 text-red-600 text-sm">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="flex items-center justify-end mt-4">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Registreren</button>
+                </div>
+            </form>
         </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <!-- Role Selection -->
-        <div class="mt-4">
-            <x-input-label for="role" :value="__('Role')" />
-            <select id="role" name="role" class="block mt-1 w-full" required>
-                <option value="gebruiker">Gebruiker</option>
-                <option value="particulier_adverteerder">Particuliere Adverteerder</option>
-                <option value="zakelijke_adverteerder">Zakelijke Adverteerder</option>
-            </select>
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </div>
+</x-app-layout>
