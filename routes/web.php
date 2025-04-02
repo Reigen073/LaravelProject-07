@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Advertisement;
+use App\Http\Controllers\ReturnController;
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
 
@@ -27,6 +28,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/reviews/{id}', [ReviewController::class, 'store'])->name('reviews.store');
 });
+Route::post('/returns/{id}', [ReturnController::class, 'store'])->middleware('auth')->name('returns.store');
+Route::get('/returns', [ReturnController::class, 'index'])->middleware('auth')->name('returns.index');
+Route::post('/returns/{id}/approve', [ReturnController::class, 'approve'])->middleware('auth')->name('returns.approve');
+Route::post('/returns/{id}/reject', [ReturnController::class, 'reject'])->middleware('auth')->name('returns.reject');
 
 Route::get('/dashboard', function () {
     $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();

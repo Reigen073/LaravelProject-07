@@ -2,35 +2,32 @@
     <x-slot name="header">
         <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
-            
-            <div class="flex gap-2">
-                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                   href="{{ route('advertisements.create') }}">
-                    {{ __('Maak advertenties') }}
-                </a>
-                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                   href="{{ route('advertisements.agenda') }}">
-                    {{ __('Bekijk advertenties in agenda') }}
-                </a>
-                <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                   href="{{ route('advertisements.history') }}">
-                    {{ __('Gekochte producten') }}
-                </a>
-            </div>
-
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.create') }}">
+                {{ __('Maak advertenties') }}
+            </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.agenda') }}">
+                {{ __('Bekijk advertenties in agenda') }}
+            </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('advertisements.history') }}">
+                {{ __('Gekochte producten') }}
+            </a>
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+               href="{{ route('returns.index') }}">
+                {{ __('Retourverzoeken') }}
+            </a>
             @auth
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-red-600 font-bold hover:underline">
-                    Logout
-                </button>
-            </form>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-red-600 font-bold hover:underline">
+                        Logout
+                    </button>
+                </form>
             @endauth
         </h2>
     </x-slot>
-
-    <h1 class="text-xl font-bold mb-4">Welcome, {{ auth()->user()->name }}!</h1>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
 
@@ -78,7 +75,7 @@
                 <!-- Favoriete Advertenties -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">Jouw Favoriete Advertenties</h3>
-                    @if (auth()->user()->favorites->isNotEmpty())
+                    @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach (auth()->user()->favorites as $advertisement)
                                 <div class="border p-4 rounded-lg shadow-md">

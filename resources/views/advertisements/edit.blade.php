@@ -77,6 +77,14 @@
                         <input type="date" name="expires_at" value="{{ $advertisement->expires_at }}" class="block w-full border p-2" required>
                     </div>
 
+                    <div>
+                        Instellingen voor slijtage
+                    </div>
+                    <div class="mt-4">
+                        <label for="wear_rate">Slijtagesnelheid (0-1)</label>
+                        <input type="number" name="wear_rate" id="wear_rate" class="block w-full border p-2" step="0.01" min="0" max="1" required>
+                    </div>
+
                     <div class="flex justify-between mt-4">
                         <a href="{{ url()->previous() }}"
                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
