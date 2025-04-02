@@ -66,18 +66,19 @@ class AdvertisementController extends Controller
     public function dashboard(Request $request)
     {
         // Start query for advertisements
-        $query = Advertisement::query();
-    
+        $query = Advertisement::where('user_id', auth()->id()); // Only show the user's advertisements
+        
         // Apply title filter if a search term is provided
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-    
+        
         // Paginate results with 6 items per page
         $advertisements = $query->paginate(6);
-    
+        
         return view('dashboard', compact('advertisements'));
     }
+    
     
     public function create()
     {
@@ -296,49 +297,57 @@ class AdvertisementController extends Controller
     //CSV
     public function uploadCsv(Request $request)
     {
-    $request->validate([
-        'csv_file' => 'required|file|mimes:csv,txt|max:2048',
-    ]);
-
-    $file = $request->file('csv_file');
-    $path = $file->getRealPath();
-    
-    $csvData = array_map('str_getcsv', file($path));
-    $header = array_shift($csvData);
-    
-    $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
-    if (array_diff($requiredColumns, $header)) {
-        return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
-    }
-
-    $user = auth()->user();
-    foreach ($csvData as $row) {
-        $row = array_combine($header, $row);
-        
-        $advertisementCount = Advertisement::where('user_id', $user->id)
-            ->where('type', $row['type'])
-            ->count();
-        
-        if ($advertisementCount >= 4) {
-            return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties per type hebben.');
-        }
-        
-        Advertisement::create([
-            'user_id' => $user->id,
-            'title' => $row['title'],
-            'description' => $row['description'],
-            'price' => (float) $row['price'],
-            'category' => $row['category'],
-            'type' => $row['type'],
-            'status' => $row['status'],
-            'condition' => $row['condition'],
-            'expires_at' => $row['expires_at'],
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
         ]);
-    }
-
-    return redirect()->route('dashboard')->with('success', 'Advertenties succesvol geüpload!');
-    }
     
+        $file = $request->file('csv_file');
+        $path = $file->getRealPath();
+        
+        $csvData = array_map('str_getcsv', file($path));
+        $header = array_shift($csvData);
+        
+        $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
+        
+        // Check if all required columns exist in the CSV
+        if (array_diff($requiredColumns, $header)) {
+            return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
+        }
+    
+        $user = auth()->user();
+        foreach ($csvData as $row) {
+            // Check if the row has the same number of columns as the header
+            if (count($row) !== count($header)) {
+                return redirect()->back()->with('error', 'CSV-bestand heeft een onjuiste hoeveelheid gegevens in een van de rijen.');
+            }
+    
+            // Safely combine the header with the row data
+            $row = array_combine($header, $row);
+    
+            $advertisementCount = Advertisement::where('user_id', $user->id)
+                ->where('type', $row['type'])
+                ->count();
+    
+            if ($advertisementCount >= 4) {
+                return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties per type hebben.');
+            }
+    
+            Advertisement::create([
+                'user_id' => $user->id,
+                'title' => $row['title'],
+                'description' => $row['description'],
+                'price' => (float) $row['price'],
+                'category' => $row['category'],
+                'type' => $row['type'],
+                'status' => $row['status'],
+                'condition' => $row['condition'],
+                'expires_at' => $row['expires_at'],
+            ]);
+        }
+    
+        return redirect()->route('dashboard')->with('success', 'Advertenties succesvol geüpload!');
+    }
+        
     public function showUploadForm()
     {
         return view('advertisements.upload');
