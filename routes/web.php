@@ -22,6 +22,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/advertisements/{advertisement}',[AdvertisementController::class, 'buy'])->name('advertisements.buy'); 
     Route::post('/advertisements/{advertisement}/rent',[AdvertisementController::class, 'rent'])->name('advertisements.rent');
     Route::post('/advertisements/{advertisement}/bidding',[AdvertisementController::class, 'bidding'])->name('advertisements.bidding');
+    Route::get('/advertisements/upload', [AdvertisementController::class, 'showUploadForm'])->name('advertisements.upload.form');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -47,5 +49,9 @@ Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggle
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
 Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
 Route::get('/favorites', [AdvertisementController::class, 'favorites'])->name('favorites');
+Route::get('/advertisements/upload', function () {
+    return view('advertisements.upload');
+})->name('advertisements.upload.page');
 
+Route::post('/advertisements/upload', [AdvertisementController::class, 'uploadCsv'])->name('advertisements.upload.page');
 require __DIR__.'/auth.php';

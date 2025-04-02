@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use App\Models\Bidding;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdvertisementController extends Controller
 {
@@ -59,6 +60,7 @@ class AdvertisementController extends Controller
         $advertisements = $query->paginate(9);
 
         return view('homepage', compact('advertisements'));
+
     }
 
     public function dashboard(Request $request)
@@ -291,5 +293,54 @@ class AdvertisementController extends Controller
         $favorites = auth()->user()->favorites()->latest()->paginate(9);
         return view('advertisements.favorites', compact('favorites'));
     }
+    //CSV
+    public function uploadCsv(Request $request)
+    {
+    $request->validate([
+        'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+    ]);
 
+    $file = $request->file('csv_file');
+    $path = $file->getRealPath();
+    
+    $csvData = array_map('str_getcsv', file($path));
+    $header = array_shift($csvData);
+    
+    $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
+    if (array_diff($requiredColumns, $header)) {
+        return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
+    }
+
+    $user = auth()->user();
+    foreach ($csvData as $row) {
+        $row = array_combine($header, $row);
+        
+        $advertisementCount = Advertisement::where('user_id', $user->id)
+            ->where('type', $row['type'])
+            ->count();
+        
+        if ($advertisementCount >= 4) {
+            return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties per type hebben.');
+        }
+        
+        Advertisement::create([
+            'user_id' => $user->id,
+            'title' => $row['title'],
+            'description' => $row['description'],
+            'price' => (float) $row['price'],
+            'category' => $row['category'],
+            'type' => $row['type'],
+            'status' => $row['status'],
+            'condition' => $row['condition'],
+            'expires_at' => $row['expires_at'],
+        ]);
+    }
+
+    return redirect()->route('dashboard')->with('success', 'Advertenties succesvol geüpload!');
+    }
+    
+    public function showUploadForm()
+    {
+        return view('advertisements.upload');
+    }
 }
