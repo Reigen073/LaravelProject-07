@@ -23,7 +23,9 @@ return new class extends Migration
             $table->text('qr_code')->nullable();
             $table->string('image')->nullable(); 
             $table->enum('condition', ['new', 'used', 'refurbished'])->default('used');
+            $table->decimal('wear_rate', 5, 2)->nullable()->check('wear_rate >= 0 AND wear_rate <= 1');
             $table->date('expires_at')->nullable();
+            $table->date('rental_start_date')->nullable();
             $table->integer('acquirer_user_id')->nullable();
             $table->timestamps();
         });

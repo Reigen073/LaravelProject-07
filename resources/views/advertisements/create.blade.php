@@ -81,6 +81,13 @@
                     <label for="expires_at">Verloopt op</label>
                     <input type="date" name="expires_at" id="expires_at" class="block w-full border p-2" required>
                 </div>
+                <div>
+                    Instellingen voor slijtage
+                </div>
+                <div class="mt-4">
+                    <label for="wear_rate">Slijtagesnelheid (0-1)</label>
+                    <input type="number" name="wear_rate" id="wear_rate" class="block w-full border p-2" step="0.01" min="0" max="1" required>
+                </div>
                 <div class="mt-4">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Plaatsen</button>
                 </div>

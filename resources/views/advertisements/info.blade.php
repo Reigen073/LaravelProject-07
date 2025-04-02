@@ -33,7 +33,7 @@
                 <form action="{{ route('advertisements.favorite', $advertisement->id) }}" method="POST" class="mt-4">
                     @csrf
                     <button type="submit" class="text-red-500 font-bold">
-                        @if(auth()->user()->favorites->contains($advertisement->id))
+                        @if(auth()->user()->favorites && auth()->user()->favorites->contains($advertisement->id))
                             ❤️ Verwijder Favoriet
                         @else
                             🤍 Toevoegen aan Favorieten
