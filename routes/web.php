@@ -10,11 +10,13 @@ use App\Models\Advertisement;
 use App\Http\Controllers\ReturnController;
 use App\Http\Middleware\RoleCheck;
 
+
 Route::get('/', [AdvertisementController::class, 'index'])->name('home');
 Route::get('/advertisements/upload', function () {
     return view('advertisements.upload');
 })->name('advertisements.upload.page');
 Route::post('advertisements/upload/csv', [AdvertisementController::class, 'uploadCsv'])->name('advertisements.upload.csv');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/advertisements/history',[AdvertisementController::class, 'history'])->name('advertisements.history');
@@ -69,6 +71,6 @@ Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggleFavorite'])->middleware('auth')->name('advertisements.favorite');
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
-// Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
+Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->name('dashboard');
 Route::get('/favorites', [AdvertisementController::class, 'favorites'])->name('favorites');
 require __DIR__.'/auth.php';
