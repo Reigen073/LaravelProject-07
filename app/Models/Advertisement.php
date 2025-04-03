@@ -19,6 +19,10 @@ class Advertisement extends Model
     {
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
     }
+
+    public function relatedAdvertisements() {
+        return $this->belongsToMany(Advertisement::class, 'related_advertisement', 'advertisement_id', 'related_advertisement_id');
+    }
     
     public function biddings()
     {

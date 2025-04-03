@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('biddings', function (Blueprint $table) {
+        Schema::create('related_advertisement', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('advertisement_id')->constrained()->onDelete('cascade');
-            $table->decimal('bid_amount', 10, 2);
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->foreignId('advertisement_id')->constrained('advertisements')->onDelete('cascade');
+            $table->foreignId('related_advertisement_id')->constrained('advertisements')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('biddings');
+        Schema::dropIfExists('related_advertisement');
     }
 };

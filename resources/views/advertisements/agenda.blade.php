@@ -103,20 +103,37 @@
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                             <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Advertentie</th>
-                                    <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Gebruiker</th>
-                                    <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Bod (€)</th>
-                                </tr>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Advertentie</th>
+                                <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Gebruiker</th>
+                                <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Bod (€)</th>
+                                <th class="px-6 py-3 text-left text-gray-700 font-medium uppercase border-b">Actie</th>
+                            </tr>
                             </thead>
                             <tbody>
                                 @foreach($biddings as $bidding)
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="px-6 py-4 text-gray-800">{{ $bidding->advertisement->title }}</td>
-                                        <td class="px-6 py-4 text-gray-800">{{ $bidding->user->name }}</td>
-                                        <td class="px-6 py-4 text-gray-600">€{{ number_format($bidding->bid_amount, 2, ',', '.') }}</td>
-                                    </tr>
-                                @endforeach
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-gray-800">{{ $bidding->advertisement->title }}</td>
+                                    <td class="px-6 py-4 text-gray-800">{{ $bidding->user->name }}</td>
+                                    <td class="px-6 py-4 text-gray-600">€{{ number_format($bidding->bid_amount, 2, ',', '.') }}</td>
+                                    <td class="px-6 py-4 flex space-x-2">
+                                        @if($bidding->status === 'accepted')
+                                        <span class="text-green-500 font-bold">Geaccepteerd</span>
+                                        @elseif($bidding->status === 'rejected')
+                                        <span class="text-red-500 font-bold">Afgewezen</span>
+                                        @else
+                                        <form action="{{ route('advertisements.biddingAccept', $bidding->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Accepteren</button>
+                                        </form>
+                                        <form action="{{ route('advertisements.biddingReject', $bidding->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Afwijzen</button>
+                                        </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
