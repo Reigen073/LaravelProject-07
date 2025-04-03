@@ -336,7 +336,6 @@ class AdvertisementController extends Controller
         $favorites = auth()->user()->favorites()->latest()->paginate(9);
         return view('advertisements.favorites', compact('favorites'));
     }
-    //CSV
     public function uploadCsv(Request $request)
     {
         $request->validate([
@@ -345,51 +344,73 @@ class AdvertisementController extends Controller
     
         $file = $request->file('csv_file');
         $path = $file->getRealPath();
-        
+    
         $csvData = array_map('str_getcsv', file($path));
         $header = array_shift($csvData);
-        
+    
         $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
-        
+    
         // Check if all required columns exist in the CSV
         if (array_diff($requiredColumns, $header)) {
             return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
         }
     
         $user = auth()->user();
+        $advertisementCounts = Advertisement::where('user_id', $user->id)
+            ->selectRaw('type, COUNT(*) as count')
+            ->groupBy('type')
+            ->pluck('count', 'type')
+            ->toArray();
+    
+        $skippedAds = 0;
+        $addedAds = 0;
+    
         foreach ($csvData as $row) {
-            // Check if the row has the same number of columns as the header
             if (count($row) !== count($header)) {
                 return redirect()->back()->with('error', 'CSV-bestand heeft een onjuiste hoeveelheid gegevens in een van de rijen.');
             }
     
-            // Safely combine the header with the row data
             $row = array_combine($header, $row);
+            $type = $row['type'];
     
-            $advertisementCount = Advertisement::where('user_id', $user->id)
-                ->where('type', $row['type'])
-                ->count();
-    
-            if ($advertisementCount >= 4) {
-                return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties per type hebben.');
+            // **Check current total count for this type before adding**
+            if (($advertisementCounts[$type] ?? 0) >= 4) {
+                $skippedAds++;
+                continue; // Skip this advertisement if the limit is reached
             }
     
+            // **Insert the new advertisement**
             Advertisement::create([
                 'user_id' => $user->id,
                 'title' => $row['title'],
                 'description' => $row['description'],
                 'price' => (float) $row['price'],
                 'category' => $row['category'],
-                'type' => $row['type'],
+                'type' => $type,
                 'status' => $row['status'],
                 'condition' => $row['condition'],
                 'expires_at' => $row['expires_at'],
             ]);
+    
+            // **Increment the count for this type**
+            $advertisementCounts[$type] = ($advertisementCounts[$type] ?? 0) + 1;
+            $addedAds++;
         }
     
-        return redirect()->route('dashboard')->with('success', 'Advertenties succesvol geüpload!');
+        if ($addedAds == 0) {
+            return redirect()->route('dashboard')->with('error', 'Geen advertenties toegevoegd. Limiet al bereikt.');
+        }
+    
+        $message = "$addedAds advertenties succesvol geüpload!";
+        if ($skippedAds > 0) {
+            $message .= " $skippedAds advertenties zijn niet toegevoegd omdat de limiet per type is bereikt.";
+        }
+    
+        return redirect()->route('dashboard')->with('success', $message);
     }
-        
+    
+
+    
     public function showUploadForm()
     {
         return view('advertisements.upload');
