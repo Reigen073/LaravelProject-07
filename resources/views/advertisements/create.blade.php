@@ -3,6 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Nieuwe Advertentie
         </h2>
+        
     </x-slot>
      @if (session('error'))
         <div class="flex justify-center">
@@ -10,9 +11,14 @@
                 {{ session('error') }}
             </div>
         </div>
+        
         @endif
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block" 
+            href="{{ route('advertisements.upload.form') }}">
+            Upload via CSV
+            </a>
             <form method="POST" action="/advertisements" enctype="multipart/form-data"> <!-- enctype voor bestand uploaden -->
                 @csrf
                 <div>
