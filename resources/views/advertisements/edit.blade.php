@@ -85,6 +85,18 @@
                         <input type="number" name="wear_rate" id="wear_rate" class="block w-full border p-2" step="0.01" min="0" max="1" required>
                     </div>
 
+                    <div class="mt-6">
+                    <label for="related_advertisements" class="block text-lg font-semibold mb-2">Gerelateerde advertenties</label>
+                        <div class="border p-4 rounded-lg shadow-md bg-gray-50 overflow-y-auto" style="max-height: calc(3 * 40px);">
+                            @foreach ($advertisements as $advertisement)
+                                <div class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded">
+                                    <input type="checkbox" name="related_advertisements[]" value="{{ $advertisement->id }}" id="ad_{{ $advertisement->id }}" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                                    <label for="ad_{{ $advertisement->id }}" class="text-gray-800 cursor-pointer">{{ $advertisement->title }}</label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <div class="flex justify-between mt-4">
                         <a href="{{ url()->previous() }}"
                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

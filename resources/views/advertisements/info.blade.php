@@ -72,6 +72,30 @@
                     </button>
                 </form>
                 @endif
+                @if ($advertisement->relatedAdvertisements->count())
+                    <h3 class="text-xl font-semibold mt-6 mb-4">Gerelateerde Advertenties</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach ($advertisement->relatedAdvertisements as $related)
+                            <a href="{{ route('advertisements.info', $related->id) }}" class="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                                @if ($related->image)
+                                    <img src="{{ asset('storage/' . $related->image) }}" alt="{{ $related->title }}" class="w-full h-32 object-cover">
+                                @else
+                                    <div class="w-full h-32 bg-gray-200 flex items-center justify-center text-gray-500">Geen afbeelding</div>
+                                @endif
+                                <div class="p-4">
+                                    <h4 class="text-lg font-semibold text-gray-900">{{ $related->title }}</h4>
+                                    <p class="text-sm text-gray-600">€{{ number_format($related->price, 2, ',', '.') }}</p>
+                                </div>
+                                @if($related->status === 'available' && $related->type === 'buy')
+                                <form action="{{ route('advertisements.buy', ['advertisement' => $advertisement->id, 'advertisement2' => $related->id]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="bg-blue-500 text-white px-4 py-2">Koop deze 2 items samen</button>
+                                    </form>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             </div>
                 <form method="POST" action="{{ route('reviews.store', $advertisement->id) }}" class="mt-4 bg-white rounded-2xl shadow-md p-4 border border-gray-200">
                     @csrf
