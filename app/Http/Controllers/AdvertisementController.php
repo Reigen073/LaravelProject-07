@@ -77,7 +77,8 @@ class AdvertisementController extends Controller
     
     public function create()
     {
-        return view('advertisements.create');
+        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
+        return view('advertisements.create', compact('advertisements'));
     }
 
     public function info($id)
@@ -124,6 +125,10 @@ class AdvertisementController extends Controller
             'image' => $request->file('image') ? $request->file('image')->store('images', 'public') : null,
             'expires_at' => $request->expires_at,
         ]);
+        
+        if ($request->has('related_advertisements')) {
+            $advertisement->relatedAdvertisements()->attach($request->related_advertisements);
+        }
 
         $advertisement->qr_code = $this->generateQrCode($advertisement);
         $advertisement->save();
@@ -149,7 +154,8 @@ class AdvertisementController extends Controller
         if ($advertisement->user_id !== auth()->id()) {
             return redirect()->route('dashboard')->with('error', 'Je mag deze advertentie niet bewerken.');
         }
-        return view('advertisements.edit', compact('advertisement'));
+        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
+        return view('advertisements.edit', compact('advertisement', 'advertisements'));
     }
     public function update(Request $request, Advertisement $advertisement)
     {
@@ -184,6 +190,10 @@ class AdvertisementController extends Controller
             'expires_at' => $request->expires_at,
             'acquirer_user_id' => $request->acquirer_user_id,
         ]);
+
+        if ($request->has('related_advertisements')) {
+            $advertisement->relatedAdvertisements()->sync($request->related_advertisements);
+        }
 
         return redirect()->route('dashboard', $advertisement->id)
             ->with('success', 'Advertentie bijgewerkt!');
@@ -230,7 +240,7 @@ class AdvertisementController extends Controller
         }
     }
 
-    public function buy(Advertisement $advertisement)
+    public function buy(Advertisement $advertisement, Advertisement $advertisement2 = null)
     {
         if ($advertisement->user_id === auth()->id()) {
             return redirect()->route('dashboard')->with('error', 'Je kunt je eigen advertentie niet kopen.');
@@ -240,6 +250,11 @@ class AdvertisementController extends Controller
         $advertisement->acquirer_user_id = auth()->id();
         $advertisement->save();
 
+        if ($advertisement2 !== null) {
+            $advertisement2->status = 'sold';
+            $advertisement2->acquirer_user_id = auth()->id();
+            $advertisement2->save();
+        }
         return redirect()->route('homepage')->with('success', 'Advertentie gekocht!');
     }
 
@@ -273,6 +288,38 @@ class AdvertisementController extends Controller
         ]);
     
         return redirect()->route('homepage')->with('success', 'Bod succesvol geplaatst!');
+    }
+
+    public function biddingAccept(Request $request, $id){
+        $bidding = Bidding::findOrFail($id);
+        $advertisement = Advertisement::findOrFail($bidding->advertisement_id);
+
+        if ($advertisement->user_id !== auth()->id()) {
+            return redirect()->route('dashboard')->with('error', 'Je kunt dit bod niet accepteren.');
+        }
+
+        $bidding->status = 'accepted';
+        $bidding->save();
+
+        $advertisement->status = 'sold';
+        $advertisement->acquirer_user_id = $bidding->user_id;
+        $advertisement->save();
+
+        return redirect()->route('advertisements.agenda')->with('success', 'Bod geaccepteerd!');
+    }
+
+    public function biddingReject(Request $request, $id){
+        $bidding = Bidding::findOrFail($id);
+        $advertisement = Advertisement::findOrFail($bidding->advertisement_id);
+
+        if ($advertisement->user_id !== auth()->id()) {
+            return redirect()->route('advertisments.agenda')->with('error', 'Je kunt dit bod niet afwijzen.');
+        }
+
+        $bidding->status = 'rejected';
+        $bidding->save();
+
+        return redirect()->route('advertisements.agenda')->with('success', 'Bod afgewezen!');
     }
 
     public function history(){

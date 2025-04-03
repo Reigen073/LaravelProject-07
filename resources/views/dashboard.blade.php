@@ -23,7 +23,7 @@
             </a>
 
             @auth
-                @if (in_array(auth()->user()->role, ['admin', 'medewerker']))
+                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder']))
                     <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                        href="{{ route('returns.index') }}">
                         {{ __('Retourverzoeken') }}
@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="mt-6">
-                            {{ $advertisements->appends(request()->input())->links() }}
+
                         </div>
                     @else
                         <p>Je hebt nog geen advertenties geplaatst.</p>
