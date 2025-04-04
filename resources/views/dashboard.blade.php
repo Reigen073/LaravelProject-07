@@ -142,7 +142,37 @@
                         </p>
                     @endif
                 </div>
-                
+                    <!-- next -->
+                    <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4">Jouw Contracten</h3>
+                            @auth
+                            @if ($contracts->isNotEmpty())
+                                <ul class="space-y-2">
+                                    @foreach ($contracts as $contract)
+                                        <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
+                                            <span>Contract ID: {{ $contract->id }}</span>
+                                            <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
+                                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                📄 Bekijk
+                                            </a>
+                                            <!-- Direct Download Link -->
+                                            <a href="{{ asset('storage/' . $contract->file_path) }}" 
+                                               download="{{ basename($contract->file_path) }}"
+                                               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                                📤 Download Contract
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p>Je hebt nog geen contracten geüpload.</p>
+                            @endif
+                        @endauth
+                        
+                            </div>
+                        </div>
+                        
+                    </div>
             </div>
         </div>
     </div>
@@ -179,6 +209,9 @@
                 <label class="block">
                     <input type="checkbox" name="show_custom_link" id="show_custom_link"> Toon Custom Link Sectie
                 </label>
+                <label class="block">
+                    <input type="checkbox" name="show_contracts" id="show_contracts"> Toon Contracten
+                </label>
                 
                 <label class="block mt-4">
                     Achtergrondkleur:
@@ -207,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const customizeBtn = document.getElementById('customize-btn');
     const closeBtn = document.getElementById('close-settings');
     const form = document.getElementById('dashboard-settings-form');
+    const contractSection = document.getElementById('contract-section');
 
     const adsSection = document.getElementById('ads-section');
     const favoritesSection = document.getElementById('favorites-section');
@@ -232,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             show_intro: document.getElementById('show_intro').checked, 
             show_image: document.getElementById('show_image').checked,
             show_custom_link: document.getElementById('show_custom_link').checked,
+            show_contracts: document.getElementById('show_contracts').checked,
             bg_color: document.getElementById('bg_color').value,
             text_color: document.getElementById('text_color').value,
         };
@@ -261,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
         document.getElementById('show_image').checked = settings.show_image ?? true;
         document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
+        document.getElementById('show_contracts').checked = settings.show_contracts ?? true;
 
         document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
         document.getElementById('text_color').value = settings.text_color ?? '#000000';
@@ -295,6 +331,12 @@ document.addEventListener('DOMContentLoaded', () => {
             customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
             customLinkSection.style.backgroundColor = settings.bg_color;
             customLinkSection.style.color = settings.text_color;
+        }
+        if (contractSection) 
+        {
+        contractSection.style.display = settings.show_contracts ? 'block' : 'none';
+        contractSection.style.backgroundColor = settings.bg_color;
+        contractSection.style.color = settings.text_color;
         }
     }
 

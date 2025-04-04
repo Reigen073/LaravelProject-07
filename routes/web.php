@@ -15,6 +15,7 @@ use App\Models\CustomLink;
 use App\Http\Controllers\CustomLinkController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Contract;
 
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
@@ -61,7 +62,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', function () {
         $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
-        return view('dashboard', compact('advertisements'));
+        $contracts = Contract::where('user_id', auth()->id())->get();  // Fetch contracts for the authenticated user
+        return view('dashboard', compact('advertisements', 'contracts'));  // Pass contracts to the view
     })->middleware('verified')->name('dashboard');
 });
 
@@ -69,6 +71,8 @@ Route::get('/advertisements/upload', [AdvertisementController::class, 'showUploa
 Route::post('/advertisements/upload/csv', [AdvertisementController::class, 'uploadCsv'])->name('advertisements.upload.csv');
 Route::get('/advertisements/{id}', [AdvertisementController::class, 'info'])->name('advertisements.info');
 Route::get('/favorites', [AdvertisementController::class, 'favorites'])->name('favorites');
+Route::get('/contracts/{contract}/export', [ContractController::class, 'export'])->name('contracts.export');
+
 Route::prefix('login')->group(function () {
     Route::get('/', [LoginController::class, 'show'])->name('register');
     Route::post('/', [LoginController::class, 'register']);

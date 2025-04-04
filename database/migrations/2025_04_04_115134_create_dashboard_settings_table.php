@@ -17,6 +17,7 @@ class CreateDashboardSettingsTable extends Migration
             $table->boolean('show_intro')->default(true);
             $table->boolean('show_image')->default(true);
             $table->boolean('show_custom_link')->default(true);
+            $table->boolean('show_contracts')->default(true);
             $table->string('bg_color', 7)->default('#ffffff');
             $table->string('text_color', 7)->default('#000000');
             $table->timestamps();

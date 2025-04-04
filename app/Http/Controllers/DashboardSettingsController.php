@@ -17,6 +17,7 @@ class DashboardSettingsController extends Controller
             'show_intro' => 'boolean',
             'show_image' => 'boolean',
             'show_custom_link' => 'boolean',
+            'show_contracts' => 'boolean',
             'bg_color' => 'required|string',
             'text_color' => 'required|string',
         ]);
@@ -43,6 +44,7 @@ class DashboardSettingsController extends Controller
                 'show_intro' => true,
                 'show_image' => true,
                 'show_custom_link' => true,
+                'show_contracts' => true,
                 'bg_color' => '#ffffff',
                 'text_color' => '#000000',
             ]);
