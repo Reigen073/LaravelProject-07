@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\ReturnController;
 use App\Http\Middleware\RoleCheck;
 use App\Models\Advertisement;
 use App\Http\Controllers\DashboardSettingsController;
+use App\Models\CustomLink;
+use App\Http\Controllers\CustomLinkController;
 
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
@@ -69,5 +72,39 @@ Route::prefix('register')->group(function () {
     Route::get('/', [RegisterController::class, 'show'])->name('register');
     Route::post('/', [RegisterController::class, 'register']);
 });
+Route::post('/custom-link', function (Request $request) {
+    // Validate the input directly on the $request object
+    $request->validate([
+        'link_name' => 'required|string|max:255',
+    ]);
+
+    // Save the custom link name
+    CustomLink::create([
+        'link_name' => $request->input('link_name'),
+    ]);
+
+    // Redirect back with success message
+    return back()->with('success', 'Custom link name saved!');
+    })->name('custom-link.store');
+    Route::get('/landing', [LandingController::class, 'index'])->name('landing.page');
+    Route::get('/{link_name}', function ($link_name) {
+        // Hier controleer je of de link bestaat
+        $customLink = CustomLink::where('link_name', $link_name)->first();
+
+        // Als de link niet bestaat, toon een 404-pagina
+        if (!$customLink) {
+            return abort(404, 'Pagina niet gevonden');
+        }
+
+        // Controleer of de gebruiker is ingelogd (optioneel, afhankelijk van je vereisten)
+        if (Auth::check()) {
+            // Als de gebruiker is ingelogd, laat ze het dashboard zien
+            return redirect()->route('dashboard');
+        }
+
+        // Als de gebruiker niet is ingelogd, kun je ze naar een andere pagina sturen
+        return redirect()->route('login');
+    });
+    Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');
 
 require __DIR__.'/auth.php';

@@ -16,6 +16,7 @@ class DashboardSettingsController extends Controller
             'show_ads' => 'required|boolean',
             'show_favorites' => 'required|boolean',
             'show_image' => 'required|boolean',
+            'custom_link' => 'required|boolean',
             'bg_color' => 'required|string',
             'text_color' => 'required|string',
         ]);
@@ -29,6 +30,8 @@ class DashboardSettingsController extends Controller
                 'show_image' => $validated['show_image'], // Store image section visibility
                 'bg_color' => $validated['bg_color'],
                 'text_color' => $validated['text_color'],
+                'custom_link' => $validated('custom_link') 
+
             ]
         );
         $user->save();
