@@ -114,7 +114,25 @@
                             <p>Je hebt nog geen favoriete advertenties.</p>
                         @endif
                     @endauth
+                    
                 </div>
+                <div id="CustomLink-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <form action="{{ route('custom-link.store') }}" method="POST">
+                        @csrf
+                        <label for="link_name">Link Name</label>
+                        <input type="text" name="link_name" id="link_name" required>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Sla link op
+                        </button>
+                    </form>
+                
+                    @if(session('link_name'))
+                        <p class="text-green-500 mt-4">
+                            Je link is: <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
+                        </p>
+                    @endif
+                </div>
+                
             </div>
         </div>
     </div>
@@ -148,6 +166,9 @@
                 <label class="block">
                     <input type="checkbox" name="show_image" id="show_image"> Toon Afbeeldingen
                 </label>
+                <label class="block">
+                    <input type="checkbox" name="show_custom_link" id="show_custom_link"> Toon Custom Link Sectie
+                </label>
                 
                 <label class="block mt-4">
                     Achtergrondkleur:
@@ -164,6 +185,8 @@
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Opslaan</button>
                 </div>
             </form>
+
+            
         </div>
     </div>
 
@@ -179,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const favoritesSection = document.getElementById('favorites-section');
     const introSection = document.getElementById('intro-section'); // Add the reference here
     const imageSection = document.getElementById('image-section'); // Add reference to the image section
+    const customLinkSection = document.getElementById('CustomLink-section'); // Add reference to the image section
 
     customizeBtn.addEventListener('click', () => {
         modal.classList.remove('hidden');
@@ -197,7 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
             show_ads: document.getElementById('show_ads').checked,
             show_favorites: document.getElementById('show_favorites').checked,
             show_intro: document.getElementById('show_intro').checked, 
-            show_image: document.getElementById('show_image').checked, // Image visibility
+            show_image: document.getElementById('show_image').checked,
+            show_custom_link: document.getElementById('show_custom_link').checked,
             bg_color: document.getElementById('bg_color').value,
             text_color: document.getElementById('text_color').value,
         };
@@ -226,6 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('show_ads').checked = settings.show_ads ?? true;
         document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
         document.getElementById('show_image').checked = settings.show_image ?? true;
+        document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
+
         document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
         document.getElementById('text_color').value = settings.text_color ?? '#000000';
 
@@ -250,11 +277,17 @@ document.addEventListener('DOMContentLoaded', () => {
             introSection.style.backgroundColor = settings.bg_color;
             introSection.style.color = settings.text_color;
         }
-        if (imageSection) {
+        if (imageSection) 
+        {
         imageSection.style.display = settings.show_image ? 'block' : 'none';  // Show or hide the image section based on the setting
         imageSection.style.backgroundColor = settings.bg_color;
         imageSection.style.color = settings.text_color;
-    }
+        }
+        if (customLinkSection) {
+        customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
+        customLinkSection.style.backgroundColor = settings.bg_color;
+        customLinkSection.style.color = settings.text_color;
+        }
     }
 
     loadSettings(); // apply settings on first load
