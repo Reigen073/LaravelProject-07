@@ -9,10 +9,14 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Middleware\RoleCheck;
 use App\Models\Advertisement;
+use App\Http\Controllers\DashboardSettingsController;
 
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
-
+Route::middleware('auth')->group(function () {
+    Route::post('/dashboard/settings', [DashboardSettingsController::class, 'store'])->name('dashboard.settings.store');
+    Route::get('/dashboard/settings', [DashboardSettingsController::class, 'fetch'])->name('dashboard.settings.fetch');
+});
 Route::middleware(['auth'])->group(function () {
     Route::get('/advertisements/history', [AdvertisementController::class, 'history'])->name('advertisements.history');
     Route::get('/advertisements/agenda', [AdvertisementController::class, 'agenda'])->name('advertisements.agenda');
