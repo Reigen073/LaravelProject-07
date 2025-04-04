@@ -12,16 +12,24 @@ class DashboardSettingsController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'show_intro_text' => 'required|boolean',
+            'show_intro' => 'required|boolean',
             'show_ads' => 'required|boolean',
             'show_favorites' => 'required|boolean',
+            'show_image' => 'required|boolean',
             'bg_color' => 'required|string',
             'text_color' => 'required|string',
         ]);
         // Store the user's settings for intro text visibility
         $user->dashboard_settings = array_merge(
             $user->dashboard_settings ?? [],
-            ['show_intro_text' => $validated['show_intro_text']]
+            [
+                'show_intro' => $validated['show_intro'],
+                'show_ads' => $validated['show_ads'],
+                'show_favorites' => $validated['show_favorites'],
+                'show_image' => $validated['show_image'], // Store image section visibility
+                'bg_color' => $validated['bg_color'],
+                'text_color' => $validated['text_color'],
+            ]
         );
         $user->save();
 

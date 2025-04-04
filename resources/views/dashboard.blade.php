@@ -51,6 +51,10 @@
                     Welkom op je dashboard! Hier kun je je advertenties beheren, je favoriete advertenties bekijken en meer. Gebruik de onderstaande knoppen om advertenties te plaatsen, favorieten te beheren of retourverzoeken in te dienen. Als je je dashboard wilt aanpassen, klik dan op de instellingenknop.
                 </p>
                 </div>
+                <div id="image-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Image</h3>
+                    <img src="{{ asset('images/sky.jpg') }}" alt="Sky Image">
+                </div>
                 <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">Jouw Advertenties</h3>
                     @if ($advertisements->isNotEmpty())
@@ -141,6 +145,10 @@
                 <label class="block">
                     <input type="checkbox" name="show_intro" id="show_intro"> Toon Introductie
                 </label>
+                <label class="block">
+                    <input type="checkbox" name="show_image" id="show_image"> Toon Afbeeldingen
+                </label>
+                
                 <label class="block mt-4">
                     Achtergrondkleur:
                     <input type="color" name="bg_color" id="bg_color" class="ml-2">
@@ -170,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adsSection = document.getElementById('ads-section');
     const favoritesSection = document.getElementById('favorites-section');
     const introSection = document.getElementById('intro-section'); // Add the reference here
+    const imageSection = document.getElementById('image-section'); // Add reference to the image section
 
     customizeBtn.addEventListener('click', () => {
         modal.classList.remove('hidden');
@@ -178,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
+        
     });
 
     form.addEventListener('submit', async (e) => {
@@ -186,7 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const payload = {
             show_ads: document.getElementById('show_ads').checked,
             show_favorites: document.getElementById('show_favorites').checked,
-            show_intro: document.getElementById('show_intro').checked, // Make sure intro visibility is sent
+            show_intro: document.getElementById('show_intro').checked, 
+            show_image: document.getElementById('show_image').checked, // Image visibility
             bg_color: document.getElementById('bg_color').value,
             text_color: document.getElementById('text_color').value,
         };
@@ -214,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('show_intro').checked = settings.show_intro ?? true; // Load intro visibility setting
         document.getElementById('show_ads').checked = settings.show_ads ?? true;
         document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
+        document.getElementById('show_image').checked = settings.show_image ?? true;
         document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
         document.getElementById('text_color').value = settings.text_color ?? '#000000';
 
@@ -238,6 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
             introSection.style.backgroundColor = settings.bg_color;
             introSection.style.color = settings.text_color;
         }
+        if (imageSection) {
+        imageSection.style.display = settings.show_image ? 'block' : 'none';  // Show or hide the image section based on the setting
+        imageSection.style.backgroundColor = settings.bg_color;
+        imageSection.style.color = settings.text_color;
+    }
     }
 
     loadSettings(); // apply settings on first load
