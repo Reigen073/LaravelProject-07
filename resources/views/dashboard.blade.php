@@ -1,36 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight space-x-2">
             {{ __('Dashboard') }}
             
             @auth
-                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder']))
-                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
+                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('advertisements.create') }}">
                         {{ __('Maak advertenties') }}
                     </a>
                 @endif
             @endauth
             
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.agenda') }}">
                 {{ __('Bekijk advertenties in agenda') }}
             </a>
-
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.history') }}">
                 {{ __('Gekochte producten') }}
             </a>
-
+    
             @auth
-                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder']))
-                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
+                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('returns.index') }}">
                         {{ __('Retourverzoeken') }}
                     </a>
                 @endif
             @endauth
-
+    
+            @auth
+                @if (auth()->user()->role === 'admin')
+                    <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+                       href="http://laravelproject.test/admin/contracts">
+                        {{ __('Admin Contracts') }}
+                    </a>
+                @endif
+            @endauth
+    
             @auth
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -41,6 +50,7 @@
             @endauth
         </h2>
     </x-slot>
+    
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
@@ -200,9 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const adsSection = document.getElementById('ads-section');
     const favoritesSection = document.getElementById('favorites-section');
-    const introSection = document.getElementById('intro-section'); // Add the reference here
-    const imageSection = document.getElementById('image-section'); // Add reference to the image section
-    const customLinkSection = document.getElementById('CustomLink-section'); // Add reference to the image section
+    const introSection = document.getElementById('intro-section');
+    const imageSection = document.getElementById('image-section');
+    const customLinkSection = document.getElementById('CustomLink-section');
 
     customizeBtn.addEventListener('click', () => {
         modal.classList.remove('hidden');
@@ -211,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
-        
     });
 
     form.addEventListener('submit', async (e) => {
@@ -247,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadSettings() {
         const response = await fetch("{{ route('dashboard.settings.fetch') }}");
         const settings = await response.json();
-        document.getElementById('show_intro').checked = settings.show_intro ?? true; // Load intro visibility setting
+        document.getElementById('show_intro').checked = settings.show_intro ?? true;
         document.getElementById('show_ads').checked = settings.show_ads ?? true;
         document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
         document.getElementById('show_image').checked = settings.show_image ?? true;
@@ -272,26 +281,26 @@ document.addEventListener('DOMContentLoaded', () => {
             favoritesSection.style.color = settings.text_color;
         }
 
-        if (introSection) { // Apply the intro section visibility
+        if (introSection) {
             introSection.style.display = settings.show_intro ? 'block' : 'none';
             introSection.style.backgroundColor = settings.bg_color;
             introSection.style.color = settings.text_color;
         }
-        if (imageSection) 
-        {
-        imageSection.style.display = settings.show_image ? 'block' : 'none';  // Show or hide the image section based on the setting
-        imageSection.style.backgroundColor = settings.bg_color;
-        imageSection.style.color = settings.text_color;
+        if (imageSection) {
+            imageSection.style.display = settings.show_image ? 'block' : 'none';
+            imageSection.style.backgroundColor = settings.bg_color;
+            imageSection.style.color = settings.text_color;
         }
         if (customLinkSection) {
-        customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
-        customLinkSection.style.backgroundColor = settings.bg_color;
-        customLinkSection.style.color = settings.text_color;
+            customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
+            customLinkSection.style.backgroundColor = settings.bg_color;
+            customLinkSection.style.color = settings.text_color;
         }
     }
 
-    loadSettings(); // apply settings on first load
+    loadSettings();
 });
+
 
     </script>
 
