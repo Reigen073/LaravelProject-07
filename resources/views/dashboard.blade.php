@@ -1,36 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight space-x-2">
             {{ __('Dashboard') }}
             
             @auth
-                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder']))
-                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
+                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('advertisements.create') }}">
                         {{ __('Maak advertenties') }}
                     </a>
                 @endif
             @endauth
             
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.agenda') }}">
                 {{ __('Bekijk advertenties in agenda') }}
             </a>
-
-            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.history') }}">
                 {{ __('Gekochte producten') }}
             </a>
-
+    
             @auth
-                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder']))
-                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
+                    <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('returns.index') }}">
                         {{ __('Retourverzoeken') }}
                     </a>
                 @endif
             @endauth
-
+    
+            @auth
+                @if (auth()->user()->role === 'admin')
+                    <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+                       href="http://laravelproject.test/admin/contracts">
+                        {{ __('Admin Contracts') }}
+                    </a>
+                @endif
+            @endauth
+    
             @auth
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -41,6 +50,7 @@
             @endauth
         </h2>
     </x-slot>
+    
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
@@ -132,7 +142,37 @@
                         </p>
                     @endif
                 </div>
-                
+                    <!-- next -->
+                    <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4">Jouw Contracten</h3>
+                            @auth
+                            @if ($contracts->isNotEmpty())
+                                <ul class="space-y-2">
+                                    @foreach ($contracts as $contract)
+                                        <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
+                                            <span>Contract ID: {{ $contract->id }}</span>
+                                            <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
+                                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                📄 Bekijk
+                                            </a>
+                                            <!-- Direct Download Link -->
+                                            <a href="{{ asset('storage/' . $contract->file_path) }}" 
+                                               download="{{ basename($contract->file_path) }}"
+                                               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                                📤 Download Contract
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p>Je hebt nog geen contracten geüpload.</p>
+                            @endif
+                        @endauth
+                        
+                            </div>
+                        </div>
+                        
+                    </div>
             </div>
         </div>
     </div>
@@ -169,6 +209,9 @@
                 <label class="block">
                     <input type="checkbox" name="show_custom_link" id="show_custom_link"> Toon Custom Link Sectie
                 </label>
+                <label class="block">
+                    <input type="checkbox" name="show_contracts" id="show_contracts"> Toon Contracten
+                </label>
                 
                 <label class="block mt-4">
                     Achtergrondkleur:
@@ -197,12 +240,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const customizeBtn = document.getElementById('customize-btn');
     const closeBtn = document.getElementById('close-settings');
     const form = document.getElementById('dashboard-settings-form');
+    const contractSection = document.getElementById('contract-section');
 
     const adsSection = document.getElementById('ads-section');
     const favoritesSection = document.getElementById('favorites-section');
-    const introSection = document.getElementById('intro-section'); // Add the reference here
-    const imageSection = document.getElementById('image-section'); // Add reference to the image section
-    const customLinkSection = document.getElementById('CustomLink-section'); // Add reference to the image section
+    const introSection = document.getElementById('intro-section');
+    const imageSection = document.getElementById('image-section');
+    const customLinkSection = document.getElementById('CustomLink-section');
 
     customizeBtn.addEventListener('click', () => {
         modal.classList.remove('hidden');
@@ -211,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
-        
     });
 
     form.addEventListener('submit', async (e) => {
@@ -223,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             show_intro: document.getElementById('show_intro').checked, 
             show_image: document.getElementById('show_image').checked,
             show_custom_link: document.getElementById('show_custom_link').checked,
+            show_contracts: document.getElementById('show_contracts').checked,
             bg_color: document.getElementById('bg_color').value,
             text_color: document.getElementById('text_color').value,
         };
@@ -247,11 +291,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadSettings() {
         const response = await fetch("{{ route('dashboard.settings.fetch') }}");
         const settings = await response.json();
-        document.getElementById('show_intro').checked = settings.show_intro ?? true; // Load intro visibility setting
+        document.getElementById('show_intro').checked = settings.show_intro ?? true;
         document.getElementById('show_ads').checked = settings.show_ads ?? true;
         document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
         document.getElementById('show_image').checked = settings.show_image ?? true;
         document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
+        document.getElementById('show_contracts').checked = settings.show_contracts ?? true;
 
         document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
         document.getElementById('text_color').value = settings.text_color ?? '#000000';
@@ -272,26 +317,32 @@ document.addEventListener('DOMContentLoaded', () => {
             favoritesSection.style.color = settings.text_color;
         }
 
-        if (introSection) { // Apply the intro section visibility
+        if (introSection) {
             introSection.style.display = settings.show_intro ? 'block' : 'none';
             introSection.style.backgroundColor = settings.bg_color;
             introSection.style.color = settings.text_color;
         }
-        if (imageSection) 
-        {
-        imageSection.style.display = settings.show_image ? 'block' : 'none';  // Show or hide the image section based on the setting
-        imageSection.style.backgroundColor = settings.bg_color;
-        imageSection.style.color = settings.text_color;
+        if (imageSection) {
+            imageSection.style.display = settings.show_image ? 'block' : 'none';
+            imageSection.style.backgroundColor = settings.bg_color;
+            imageSection.style.color = settings.text_color;
         }
         if (customLinkSection) {
-        customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
-        customLinkSection.style.backgroundColor = settings.bg_color;
-        customLinkSection.style.color = settings.text_color;
+            customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
+            customLinkSection.style.backgroundColor = settings.bg_color;
+            customLinkSection.style.color = settings.text_color;
+        }
+        if (contractSection) 
+        {
+        contractSection.style.display = settings.show_contracts ? 'block' : 'none';
+        contractSection.style.backgroundColor = settings.bg_color;
+        contractSection.style.color = settings.text_color;
         }
     }
 
-    loadSettings(); // apply settings on first load
+    loadSettings();
 });
+
 
     </script>
 

@@ -1,47 +1,56 @@
 <?php
 
+// app/Http/Controllers/DashboardSettingsController.php
 namespace App\Http\Controllers;
 
+use App\Models\DashboardSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardSettingsController extends Controller
 {
     public function store(Request $request)
     {
-        $user = Auth::user();
-
+        // Validate the settings
         $validated = $request->validate([
-            'show_intro' => 'required|boolean',
-            'show_ads' => 'required|boolean',
-            'show_favorites' => 'required|boolean',
-            'show_image' => 'required|boolean',
-            'custom_link' => 'required|boolean',
+            'show_ads' => 'boolean',
+            'show_favorites' => 'boolean',
+            'show_intro' => 'boolean',
+            'show_image' => 'boolean',
+            'show_custom_link' => 'boolean',
+            'show_contracts' => 'boolean',
             'bg_color' => 'required|string',
             'text_color' => 'required|string',
         ]);
-        // Store the user's settings for intro text visibility
-        $user->dashboard_settings = array_merge(
-            $user->dashboard_settings ?? [],
-            [
-                'show_intro' => $validated['show_intro'],
-                'show_ads' => $validated['show_ads'],
-                'show_favorites' => $validated['show_favorites'],
-                'show_image' => $validated['show_image'], // Store image section visibility
-                'bg_color' => $validated['bg_color'],
-                'text_color' => $validated['text_color'],
-                'custom_link' => $validated('custom_link') 
 
-            ]
+        // Save the settings for the logged-in user
+        $userSettings = DashboardSetting::updateOrCreate(
+            ['user_id' => auth()->id()],
+            $validated
         );
-        $user->save();
 
-        return response()->json(['success' => true]);
+        return response()->json($userSettings);
     }
 
     public function fetch()
     {
-        return response()->json(Auth::user()->dashboard_settings ?? []);
+        $settings = DashboardSetting::where('user_id', auth()->id())->first();
+
+        // If no settings are found, return default settings
+        if (!$settings) {
+            $settings = DashboardSetting::create([
+                'user_id' => auth()->id(),
+                'show_ads' => true,
+                'show_favorites' => true,
+                'show_intro' => true,
+                'show_image' => true,
+                'show_custom_link' => true,
+                'show_contracts' => true,
+                'bg_color' => '#ffffff',
+                'text_color' => '#000000',
+            ]);
+        }
+
+        return response()->json($settings);
     }
-    
 }
+
