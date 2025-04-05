@@ -86,7 +86,7 @@
                     @auth
                         @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                @foreach (auth()->user()->favorites as $advertisement)
+                                @foreach ($favoriteAdvertisements as $advertisement)
                                     <div class="border p-4 rounded-lg shadow-md">
                                         <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
                                         <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>

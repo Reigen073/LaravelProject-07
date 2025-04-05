@@ -82,7 +82,7 @@
                     </div>
                     <div class="mt-4">
                         <label for="wear_rate">Slijtagesnelheid (0-1)</label>
-                        <input type="number" name="wear_rate" id="wear_rate" class="block w-full border p-2" step="0.01" min="0" max="1" required>
+                        <input type="number" name="wear_rate" id="wear_rate" value="{{ $advertisement->wear_rate }}" class="block w-full border p-2" step="0.01" min="0" max="1" required>
                     </div>
 
                     <div class="mt-6">

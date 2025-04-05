@@ -2,9 +2,15 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-2xl text-gray-900 leading-tight">De Bazaar</h2>
-            <h2 class="font-bold text-2xl text-gray-900 leading-tight">Laatste Advertenties</h2>
+            <h2 class="font-bold text-2xl text-gray-900 leading-tight">{{ __('messages.latest_adverts') }}</h2>
             <div class="flex items-center space-x-4">
                 @auth
+                <a href="{{ route('profile.edit', Auth::user()->id) }}" class="text-blue-600 font-bold hover:underline"> 
+                    Profiel
+                </a>
+                <a href="{{ route('dashboard') }}" class="text-blue-600 font-bold hover:underline">
+                    Dashboard
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-red-600 font-bold hover:underline">
@@ -32,23 +38,23 @@
                 <div class="flex space-x-4">
                     <!-- Category Filter -->
                     <div>
-                        <label for="category" class="font-semibold text-gray-700">Categorie</label>
+                        <label for="category" class="font-semibold text-gray-700">{{ __('messages.category') }}</label>
                         <select name="category" id="category" class="border p-2">
-                            <option value="">Alle</option>
+                            <option value="">{{ __('messages.all') }}</option>
                             <option value="games" {{ request('category') == 'games' ? 'selected' : '' }}>Games</option>
-                            <option value="household" {{ request('category') == 'household' ? 'selected' : '' }}>Huishoud</option>
+                            <option value="household" {{ request('category') == 'household' ? 'selected' : '' }}>{{ __('messages.household') }}</option>
                             <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>Buiten</option>
                         </select>
                     </div>
 
                     <!-- Condition Filter -->
                     <div>
-                        <label for="condition" class="font-semibold text-gray-700">Conditie</label>
+                        <label for="condition" class="font-semibold text-gray-700">{{ __('messages.condition') }}</label>
                         <select name="condition" id="condition" class="border p-2">
-                            <option value="">Alle</option>
-                            <option value="new" {{ request('condition') == 'new' ? 'selected' : '' }}>Nieuw</option>
-                            <option value="used" {{ request('condition') == 'used' ? 'selected' : '' }}>Gebruikt</option>
-                            <option value="refurbished" {{ request('condition') == 'refurbished' ? 'selected' : '' }}>Gereviseerd</option>
+                            <option value="">{{ __('messages.all') }}</option>
+                            <option value="new" {{ request('condition') == 'new' ? 'selected' : '' }}>{{ __('messages.new') }}</option>
+                            <option value="used" {{ request('condition') == 'used' ? 'selected' : '' }}>{{ __('messages.used') }}</option>
+                            <option value="refurbished" {{ request('condition') == 'refurbished' ? 'selected' : '' }}>{{ __('messages.refurbished') }}</option>
                         </select>
                     </div>
 
@@ -56,26 +62,26 @@
                     <div>
                         <label for="status" class="font-semibold text-gray-700">Status</label>
                         <select name="status" id="status" class="border p-2">
-                            <option value="">Alle</option>
-                            <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Beschikbaar</option>
-                            <option value="rented" {{ request('status') == 'rented' ? 'selected' : '' }}>Verhuurd</option>
-                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Verkocht</option>
+                            <option value="">{{ __('messages.all') }}</option>
+                            <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>{{ __('messages.available') }}</option>
+                            <option value="rented" {{ request('status') == 'rented' ? 'selected' : '' }}>{{ __('messages.rented') }}</option>
+                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>{{ __('messages.sold') }}</option>
                         </select>
                     </div>
 
                     <!-- Sort By Filter -->
                     <div>
-                        <label for="sort" class="font-semibold text-gray-700">Sorteren op</label>
+                        <label for="sort" class="font-semibold text-gray-700">{{ __('messages.sort_by') }}</label>
                         <select name="sort" id="sort" class="border p-2">
-                            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Prijs: Laag naar Hoog</option>
-                            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Prijs: Hoog naar Laag</option>
-                            <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Titel A-Z</option>
-                            <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Titel Z-A</option>
+                            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>{{__('messages.price_asc')}}</option>
+                            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>{{__('messages.price_desc')}}</option>
+                            <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>{{__('messages.title_asc')}}/option>
+                            <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>{{__('messages.title_desc')}}</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Filteren</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">{{ __('messages.filter') }}</button>
             </form>
 
             <!-- Advertisements -->

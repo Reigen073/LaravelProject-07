@@ -60,18 +60,18 @@ class AdvertisementController extends Controller
 
     public function dashboard(Request $request)
     {
-        // Start query for advertisements
-        $query = Advertisement::where('user_id', auth()->id()); // Only show the user's advertisements
+        $query = Advertisement::where('user_id', auth()->id()); 
         
-        // Apply title filter if a search term is provided
         if ($request->has('search') && $request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
         
-        // Paginate results with 6 items per page
         $advertisements = $query->paginate(6);
+
+        $favorites = auth()->user()->favorites()->pluck('advertisement_id');
+        $favoriteAdvertisements = Advertisement::whereIn('id', $favorites)->latest()->paginate(6);
         
-        return view('dashboard', compact('advertisements'));
+        return view('dashboard', compact('advertisements', 'favoriteAdvertisements'));
     }
     
     
@@ -94,6 +94,7 @@ class AdvertisementController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:50',
+            'wear_rate' => 'required|numeric|min:0|max:1',
             'type' => 'required|in:buy,rent,bidding',
             'status' => 'required|in:available,rented,sold',
             'condition' => 'required|in:new,used,refurbished',
@@ -119,6 +120,7 @@ class AdvertisementController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'type' => $request->type,
+            'wear_rate' => $request->wear_rate,
             'category' => $request->category,
             'status' => $request->status,
             'condition' => $request->condition,
@@ -145,7 +147,7 @@ class AdvertisementController extends Controller
 
     public function userAdvertisements()
     {
-        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
+        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->paginate(6);
         return view('dashboard', compact('advertisements'));
     }
 
@@ -169,6 +171,7 @@ class AdvertisementController extends Controller
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:50',
             'type' => 'required|in:buy,rent,bidding',
+            'wear_rate' => 'required|numeric|min:0|max:1',
             'status' => 'required|in:available,rented,sold',
             'condition' => 'required|in:new,used,refurbished',
             'qr_code' => 'nullable|string|max:255',
@@ -183,6 +186,7 @@ class AdvertisementController extends Controller
             'price' => $request->price,
             'category' => $request->category,
             'type' => $request->type,
+            'wear_rate' => $request->wear_rate,
             'status' => $request->status,
             'condition' => $request->condition,
             'qr_code' => $request->qr_code,
@@ -200,12 +204,7 @@ class AdvertisementController extends Controller
     }
     public function destroy(Advertisement $advertisement)
     {
-        if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je mag deze advertentie niet verwijderen.');
-        }
-
         $advertisement->delete();
-
         return redirect()->route('dashboard')->with('success', 'Advertentie succesvol verwijderd.');
     }
 
@@ -276,10 +275,12 @@ class AdvertisementController extends Controller
         if ($advertisement->user_id === auth()->id()) {
             return redirect()->route('dashboard')->with('error', 'Je kunt niet op je eigen advertentie bieden.');
         }
-    
+        
         $request->validate([
             'bid_amount' => 'required|numeric|min:0.01',
         ]);
+
+        
     
         Bidding::create([
             'user_id' => auth()->id(),

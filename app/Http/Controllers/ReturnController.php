@@ -60,7 +60,7 @@ class ReturnController extends Controller
             ReturnRequest::create([
                 'advertisement_id' => $advertisement->id,
                 'user_id' => auth()->id(),
-                'image' => $imagePath,
+                'image' => $request->imagePath,
                 'reason' => $request->reason,
                 'status' => 'approved',
             ]);
