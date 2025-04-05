@@ -17,7 +17,7 @@ class RoleCheck
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
-            return redirect()->route('dashboard')->with('error', 'Je hebt geen toestemming om deze actie uit te voeren.');
+            return redirect()->route('dashboard')->with('error', __('messages.no_permissions'));
         }
 
         return $next($request);

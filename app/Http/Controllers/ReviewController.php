@@ -19,6 +19,16 @@ class ReviewController extends Controller
         if ($request->type === 'advertisement') {
             $advertisement_id = Advertisement::findOrFail($id)->id; 
             $advertiser_id = null;
+        
+            Review::create([
+                'user_id' => auth()->id(),
+                'advertisement_id' => $advertisement_id,
+                'advertiser_id' => $advertiser_id,
+                'comment' => $request->comment,
+                'rating' => $request->rating,
+            ]);
+        
+            return redirect()->route('advertisements.info', ['id' => $advertisement_id])->with('success', __('messages.review_placed'));
         } else {
             $advertisement_id = null;
             $advertiser_id = $id;
@@ -32,6 +42,6 @@ class ReviewController extends Controller
             'rating' => $request->rating,
         ]);
 
-        return redirect()->route('advertisements.info', ['id' => $advertisement_id])->with('success', 'Review geplaatst!');
+        return redirect()->route('profile.show', ['user' => $advertiser_id])->with('success', __('messages.review_placed'));
     }
 }

@@ -15,6 +15,20 @@
 
     <div class="py-12">
         <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 grid grid-cols-2 gap-6">
+        @if (session('success'))
+            <div class="flex justify-center">
+                <div class="bg-green-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="flex justify-center">
+                <div class="bg-red-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h4 class="text-md font-semibold mb-2">{{ __('messages.purchased_products') }}</h4>
                 <form method="GET" action="{{ route('returns.index') }}" class="mb-6 flex justify-between items-center">

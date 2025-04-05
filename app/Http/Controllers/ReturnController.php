@@ -63,14 +63,14 @@ class ReturnController extends Controller
             'status' => 'available',
             'acquirer_user_id' => null,
         ]);
-        return back()->with('success', 'Retourverzoek goedgekeurd! Advertentie is nu weer beschikbaar.');
+        return back()->with('success', __('messages.return_request_approved'));
     }
 
     public function reject($id)
     {
         $returnRequest = ReturnRequest::findOrFail($id);
         $returnRequest->update(['status' => 'rejected']);
-        return back()->with('error', 'Retourverzoek afgekeurd!');
+        return back()->with('error', __('messages.return_request_rejected'));
     }
 
     public function store(Request $request, $id) {
@@ -82,7 +82,7 @@ class ReturnController extends Controller
         $advertisement = Advertisement::findOrFail($id);
 
         if ($advertisement->acquirer_user_id !== auth()->id()) {
-            return back()->with('error', 'Je kunt alleen producten retourneren die je hebt gekocht.');
+            return back()->with('error', __('messages.only_return_you_bought'));
         }
 
         if ($advertisement->type === 'rent') {
@@ -104,7 +104,7 @@ class ReturnController extends Controller
                 'status' => 'approved',
             ]);
 
-            return back()->with('success', 'Het product is teruggebracht en weer beschikbaar voor verhuur.');
+            return back()->with('success', __('messages.product_returned'));
         }
 
         $imagePath = $request->file('image') ? $request->file('image')->store('returns', 'public') : null;
@@ -117,6 +117,6 @@ class ReturnController extends Controller
             'status' => 'pending',
         ]);
 
-        return back()->with('success', 'Retourverzoek ingediend!');
+        return back()->with('success', __('messages.return_request_sent'));
     }
 }

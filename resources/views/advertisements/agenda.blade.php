@@ -248,36 +248,6 @@
                     <input type="hidden" name="filter_set" value="bidding">    
                         <div class="flex space-x-4">
                             <div>
-                                <label for="category" class="font-semibold text-gray-700">{{ __('messages.category') }}</label>
-                                <select name="category" id="category" class="border p-2">
-                                    <option value="">{{ __('messages.all') }}</option>
-                                    <option value="games" {{ request('category') == 'games' ? 'selected' : '' }}>Games</option>
-                                    <option value="household" {{ request('category') == 'household' ? 'selected' : '' }}>{{ __('messages.household') }}</option>
-                                    <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>Buiten</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="condition" class="font-semibold text-gray-700">{{ __('messages.condition') }}</label>
-                                <select name="condition" id="condition" class="border p-2">
-                                    <option value="">{{ __('messages.all') }}</option>
-                                    <option value="new" {{ request('condition') == 'new' ? 'selected' : '' }}>{{ __('messages.new') }}</option>
-                                    <option value="used" {{ request('condition') == 'used' ? 'selected' : '' }}>{{ __('messages.used') }}</option>
-                                    <option value="refurbished" {{ request('condition') == 'refurbished' ? 'selected' : '' }}>{{ __('messages.refurbished') }}</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="status" class="font-semibold text-gray-700">Status</label>
-                                <select name="status" id="status" class="border p-2">
-                                    <option value="">{{ __('messages.all') }}</option>
-                                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>{{ __('messages.available') }}</option>
-                                    <option value="rented" {{ request('status') == 'rented' ? 'selected' : '' }}>{{ __('messages.rented') }}</option>
-                                    <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>{{ __('messages.sold') }}</option>
-                                </select>
-                            </div>
-
-                            <div>
                                 <label for="sort" class="font-semibold text-gray-700">{{ __('messages.sort_by') }}</label>
                                 <select name="sort" id="sort" class="border p-2">
                                     <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>{{__('messages.price_asc')}}</option>

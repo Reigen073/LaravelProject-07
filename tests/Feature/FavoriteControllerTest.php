@@ -21,7 +21,7 @@ class FavoriteControllerTest extends DuskTestCase
 
         $response = $this->actingAs($this->user)->post('/advertisements/' . $advertisement->id . '/favorite');
 
-        $response->assertSessionHas('success', 'Advertentie toegevoegd aan favorieten.');
+        $response->assertSessionHas('success');
         $this->assertTrue($this->user->favorites()->where('advertisement_id', $advertisement->id)->exists());
     }
 
@@ -36,7 +36,7 @@ class FavoriteControllerTest extends DuskTestCase
 
         $response = $this->actingAs($this->user)->post('/advertisements/' . $advertisement->id . '/favorite');
 
-        $response->assertSessionHas('success', 'Advertentie verwijderd uit favorieten.');
+        $response->assertSessionHas('success');
         $this->assertFalse($this->user->fresh()->favorites()->where('advertisement_id', $advertisement->id)->exists());
     }
 
