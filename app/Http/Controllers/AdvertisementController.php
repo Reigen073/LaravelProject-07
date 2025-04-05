@@ -311,18 +311,6 @@ class AdvertisementController extends Controller
                 $biddingsQuery->where('title', 'like', '%' . $request->search . '%');
             }
 
-            if ($request->has('category') && $request->category) {
-                $biddingsQuery->where('category', $request->category);
-            }
-
-            if ($request->has('condition') && $request->condition) {
-                $biddingsQuery->where('condition', $request->condition);
-            }
-
-            if ($request->has('status') && $request->status) {
-                $biddingsQuery->where('status', $request->status);
-            }
-
             if ($request->filled('sort')) {
                 $this->applySorting($biddingsQuery, $request->sort);
             }

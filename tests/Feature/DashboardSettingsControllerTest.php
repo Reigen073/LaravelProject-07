@@ -15,7 +15,9 @@ class DashboardSettingsControllerTest extends TestCase
     public function it_stores_dashboard_settings_for_authenticated_user()
     {
         $this->withoutMiddleware();
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => 'admin',
+        ]);
         $payload = [
             'show_ads' => false,
             'show_favorites' => true,
@@ -37,7 +39,9 @@ class DashboardSettingsControllerTest extends TestCase
     public function it_returns_existing_dashboard_settings()
     {
         $this->withoutMiddleware();
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => 'admin',
+        ]);
 
         $settings = DashboardSetting::create([
             'user_id' => $user->id,

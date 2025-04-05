@@ -16,7 +16,7 @@ class ProfileController extends Controller
     public function show($id): View
     {
         $user = User::findOrFail($id);
-        $reviews = $user->reviewsReceived()->get();
+        $reviews = $user->reviewsReceived()->paginate(6);
         return view('profile.show', compact('user', 'reviews'));
     }
     /**

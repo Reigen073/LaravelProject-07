@@ -31,7 +31,11 @@ class ContractControllerTest extends TestCase
     public function it_shows_contracts_index_page_with_paginated_users()
     {
         User::factory()->count(10)->create();
+        $user = User::factory()->create([
+            'role' => 'admin',
+        ]);
 
+        $this->actingAs($user);
         $response = $this->get(route('contracts.index'));
 
         $response->assertViewIs('admin.contracts.index');
