@@ -213,5 +213,6 @@ return [
     'product_returned' => 'Product succesvol geretourneerd.',
     'review_placed' => 'Beoordeling succesvol geplaatst.',
     'page_not_found' => 'Pagina niet gevonden',
+    'no_permissions' => 'Je hebt geen toestemming om deze actie uit te voeren.',
 
 ];

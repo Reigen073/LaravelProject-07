@@ -214,4 +214,5 @@ return [
     'product_returned' => 'Product returned successfully.',
     'review_placed' => 'Review placed successfully.',
     'page_not_found' => 'Page not found',
+    'no_permissions' => 'You do not have permission to execute this action.',
 ];
