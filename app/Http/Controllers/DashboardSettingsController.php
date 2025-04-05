@@ -10,7 +10,6 @@ class DashboardSettingsController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate the settings
         $validated = $request->validate([
             'show_ads' => 'boolean',
             'show_favorites' => 'boolean',
@@ -22,7 +21,6 @@ class DashboardSettingsController extends Controller
             'text_color' => 'required|string',
         ]);
 
-        // Save the settings for the logged-in user
         $userSettings = DashboardSetting::updateOrCreate(
             ['user_id' => auth()->id()],
             $validated
@@ -35,7 +33,6 @@ class DashboardSettingsController extends Controller
     {
         $settings = DashboardSetting::where('user_id', auth()->id())->first();
 
-        // If no settings are found, return default settings
         if (!$settings) {
             $settings = DashboardSetting::create([
                 'user_id' => auth()->id(),

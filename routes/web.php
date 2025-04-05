@@ -88,32 +88,6 @@ Route::get('/lang/{locale}', function ($locale) {
 
     return redirect()->back();
 })->middleware(SetLocale::Class)->name('lang.switch');
-// Route::post('/custom-link', function (Request $request) {
-//     $request->validate([
-//         'link_name' => 'required|string|max:255',
-//     ]);
-
-//     CustomLink::create([
-//         'link_name' => $request->input('link_name'),
-//     ]);
-
-//     return back()->with('success', 'Custom link name saved!');
-//     })->name('custom-link.store');
-
-//     Route::get('/landing', [LandingController::class, 'index'])->name('landing.page');
-//     Route::get('/{link_name}', function ($link_name) {
-//         $customLink = CustomLink::where('link_name', $link_name)->first();
-
-//         if (!$customLink) {
-//             return abort(404, 'Pagina niet gevonden');
-//         }
-
-//         if (Auth::check()) {
-//             return redirect()->route('dashboard');
-//         }
-
-//         return redirect()->route('login');
-//     });
 Route::get('/{link_name}', [CustomLinkController::class, 'handleLinkName']);
 
 Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');

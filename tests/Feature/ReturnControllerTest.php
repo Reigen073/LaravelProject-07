@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ReturnControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     private user $user;
 

@@ -239,117 +239,113 @@
             </form>
         </div>
     </div>
-
     <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('dashboard-settings-modal');
-    const customizeBtn = document.getElementById('customize-btn');
-    const closeBtn = document.getElementById('close-settings');
-    const form = document.getElementById('dashboard-settings-form');
-    const contractSection = document.getElementById('contract-section');
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('dashboard-settings-modal');
+            const customizeBtn = document.getElementById('customize-btn');
+            const closeBtn = document.getElementById('close-settings');
+            const form = document.getElementById('dashboard-settings-form');
+            const contractSection = document.getElementById('contract-section');
 
-    const adsSection = document.getElementById('ads-section');
-    const favoritesSection = document.getElementById('favorites-section');
-    const introSection = document.getElementById('intro-section');
-    const imageSection = document.getElementById('image-section');
-    const customLinkSection = document.getElementById('CustomLink-section');
+            const adsSection = document.getElementById('ads-section');
+            const favoritesSection = document.getElementById('favorites-section');
+            const introSection = document.getElementById('intro-section');
+            const imageSection = document.getElementById('image-section');
+            const customLinkSection = document.getElementById('CustomLink-section');
 
-    customizeBtn.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-        loadSettings();
-    });
+            customizeBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                loadSettings();
+            });
 
-    closeBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-        const payload = {
-            show_ads: document.getElementById('show_ads').checked,
-            show_favorites: document.getElementById('show_favorites').checked,
-            show_intro: document.getElementById('show_intro').checked, 
-            show_image: document.getElementById('show_image').checked,
-            show_custom_link: document.getElementById('show_custom_link').checked,
-            show_contracts: document.getElementById('show_contracts').checked,
-            bg_color: document.getElementById('bg_color').value,
-            text_color: document.getElementById('text_color').value,
-        };
+                const payload = {
+                    show_ads: document.getElementById('show_ads').checked,
+                    show_favorites: document.getElementById('show_favorites').checked,
+                    show_intro: document.getElementById('show_intro').checked, 
+                    show_image: document.getElementById('show_image').checked,
+                    show_custom_link: document.getElementById('show_custom_link').checked,
+                    show_contracts: document.getElementById('show_contracts').checked,
+                    bg_color: document.getElementById('bg_color').value,
+                    text_color: document.getElementById('text_color').value,
+                };
 
-        const response = await fetch("{{ route('dashboard.settings.store') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-            },
-            body: JSON.stringify(payload)
+                const response = await fetch("{{ route('dashboard.settings.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    applySettings(payload);
+                    modal.classList.add('hidden');
+                } else {
+                    alert('Opslaan mislukt');
+                }
+            });
+
+            async function loadSettings() {
+                const response = await fetch("{{ route('dashboard.settings.fetch') }}");
+                const settings = await response.json();
+                document.getElementById('show_intro').checked = settings.show_intro ?? true;
+                document.getElementById('show_ads').checked = settings.show_ads ?? true;
+                document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
+                document.getElementById('show_image').checked = settings.show_image ?? true;
+                document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
+                document.getElementById('show_contracts').checked = settings.show_contracts ?? true;
+
+                document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
+                document.getElementById('text_color').value = settings.text_color ?? '#000000';
+
+                applySettings(settings);
+            }
+
+            function applySettings(settings) {
+                if (adsSection) {
+                    adsSection.style.display = settings.show_ads ? 'block' : 'none';
+                    adsSection.style.backgroundColor = settings.bg_color;
+                    adsSection.style.color = settings.text_color;
+                }
+
+                if (favoritesSection) {
+                    favoritesSection.style.display = settings.show_favorites ? 'block' : 'none';
+                    favoritesSection.style.backgroundColor = settings.bg_color;
+                    favoritesSection.style.color = settings.text_color;
+                }
+
+                if (introSection) {
+                    introSection.style.display = settings.show_intro ? 'block' : 'none';
+                    introSection.style.backgroundColor = settings.bg_color;
+                    introSection.style.color = settings.text_color;
+                }
+                if (imageSection) {
+                    imageSection.style.display = settings.show_image ? 'block' : 'none';
+                    imageSection.style.backgroundColor = settings.bg_color;
+                    imageSection.style.color = settings.text_color;
+                }
+                if (customLinkSection) {
+                    customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
+                    customLinkSection.style.backgroundColor = settings.bg_color;
+                    customLinkSection.style.color = settings.text_color;
+                }
+                if (contractSection) 
+                {
+                contractSection.style.display = settings.show_contracts ? 'block' : 'none';
+                contractSection.style.backgroundColor = settings.bg_color;
+                contractSection.style.color = settings.text_color;
+                }
+            }
+
+            loadSettings();
         });
-
-        if (response.ok) {
-            applySettings(payload);
-            modal.classList.add('hidden');
-        } else {
-            alert('Opslaan mislukt');
-        }
-    });
-
-    async function loadSettings() {
-        const response = await fetch("{{ route('dashboard.settings.fetch') }}");
-        const settings = await response.json();
-        document.getElementById('show_intro').checked = settings.show_intro ?? true;
-        document.getElementById('show_ads').checked = settings.show_ads ?? true;
-        document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
-        document.getElementById('show_image').checked = settings.show_image ?? true;
-        document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
-        document.getElementById('show_contracts').checked = settings.show_contracts ?? true;
-
-        document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
-        document.getElementById('text_color').value = settings.text_color ?? '#000000';
-
-        applySettings(settings);
-    }
-
-    function applySettings(settings) {
-        if (adsSection) {
-            adsSection.style.display = settings.show_ads ? 'block' : 'none';
-            adsSection.style.backgroundColor = settings.bg_color;
-            adsSection.style.color = settings.text_color;
-        }
-
-        if (favoritesSection) {
-            favoritesSection.style.display = settings.show_favorites ? 'block' : 'none';
-            favoritesSection.style.backgroundColor = settings.bg_color;
-            favoritesSection.style.color = settings.text_color;
-        }
-
-        if (introSection) {
-            introSection.style.display = settings.show_intro ? 'block' : 'none';
-            introSection.style.backgroundColor = settings.bg_color;
-            introSection.style.color = settings.text_color;
-        }
-        if (imageSection) {
-            imageSection.style.display = settings.show_image ? 'block' : 'none';
-            imageSection.style.backgroundColor = settings.bg_color;
-            imageSection.style.color = settings.text_color;
-        }
-        if (customLinkSection) {
-            customLinkSection.style.display = settings.show_custom_link ? 'block' : 'none';
-            customLinkSection.style.backgroundColor = settings.bg_color;
-            customLinkSection.style.color = settings.text_color;
-        }
-        if (contractSection) 
-        {
-        contractSection.style.display = settings.show_contracts ? 'block' : 'none';
-        contractSection.style.backgroundColor = settings.bg_color;
-        contractSection.style.color = settings.text_color;
-        }
-    }
-
-    loadSettings();
-});
-
-
     </script>
-
 </x-app-layout>

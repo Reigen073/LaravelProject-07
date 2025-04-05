@@ -10,34 +10,32 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ContractController extends Controller
 {
-    // Toon de contractenpagina
     public function index()
     {
         $users = User::all(); 
-        //paginatiom at 6
         $users = User::paginate(6); 
         return view('admin.contracts.index', compact('users'));
     }
-// Upload een contract
-public function upload(Request $request)
-{
-    // Validatie van de gegevens - alleen PDF toegestaan
-    $request->validate([
-        'user_id' => 'required|exists:users,id', // Zorg ervoor dat de geselecteerde gebruiker bestaat
-        'contract' => 'required|file|mimes:pdf|max:10240', // Alleen PDF, maximaal 10MB
-    ]);
+ 
+    public function upload(Request $request)
+    {
+        // Validatie van de gegevens - alleen PDF toegestaan
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'contract' => 'required|file|mimes:pdf|max:10240', // Alleen PDF, maximaal 10MB
+        ]);
 
-    // Opslaan van het bestand
-    $path = $request->file('contract')->store('contracts', 'public');
+        // Opslaan van het bestand
+        $path = $request->file('contract')->store('contracts', 'public');
 
-    // Sla het contract op in de database
-    $contract = new Contract();
-    $contract->user_id = $request->user_id;
-    $contract->file_path = $path;
-    $contract->save();
+        // Sla het contract op in de database
+        $contract = new Contract();
+        $contract->user_id = $request->user_id;
+        $contract->file_path = $path;
+        $contract->save();
 
-    return redirect()->route('contracts.index')->with('success', 'Contract succesvol geüpload!');
-}
+        return redirect()->route('contracts.index')->with('success', 'Contract succesvol geüpload!');
+    }
 
 
 }
