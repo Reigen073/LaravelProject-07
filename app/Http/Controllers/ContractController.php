@@ -13,7 +13,6 @@ class ContractController extends Controller
     public function index()
     {
         $users = User::all(); 
-        $users = User::paginate(6); 
         return view('admin.contracts.index', compact('users'));
     }
  
@@ -21,13 +20,16 @@ class ContractController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'contract' => 'required|file|mimes:pdf|max:10240',
+            'contract' => 'required|file|mimes:pdf|max:10240', // Alleen PDF, maximaal 10MB
+            'contract_name' => 'required|string|max:255', // Name of the contract
+
         ]);
 
         $path = $request->file('contract')->store('contracts', 'public');
 
         $contract = new Contract();
         $contract->user_id = $request->user_id;
+        $contract->contract_name = $request->contract_name; 
         $contract->file_path = $path;
         $contract->save();
 
