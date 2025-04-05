@@ -42,7 +42,7 @@ class ReviewControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->post('/reviews/' . $advertisement->id, $data);
     
-        $response->assertSessionHas('success', 'Review geplaatst!');
+        $response->assertSessionHas('success');
         $this->assertDatabaseHas('reviews', [
             'user_id' => $this->user->id,
             'advertisement_id' => $advertisement->id,

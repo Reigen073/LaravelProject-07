@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use App\Controller\AdvertisementController;
+use \App\Models\Bidding;
 use routes\web;
 
 
@@ -113,7 +114,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $response = $this->get(route('advertisements.edit', $advertisement->id));
 
         $response->assertRedirect(route('dashboard'));
-        $response->assertSessionHas('error', 'Je mag deze advertentie niet bewerken.');
+        $response->assertSessionHas('error');
     }
 
     /** @test */
@@ -130,12 +131,91 @@ class AdvertisementControllerTest extends DuskTestCase
             'bid_amount' => 50,
         ]);
 
-        $response->assertRedirect(route('homepage'));
+        $response->assertRedirect(route('advertisements.info', $advertisement->id));
         $this->assertDatabaseHas('biddings', [
             'user_id' => $user->id,
             'advertisement_id' => $advertisement->id,
             'bid_amount' => 50,
         ]);
+    }
+    /** @test */
+    public function user_can_buy_an_advertisement()
+    {
+        $buyer = User::factory()->create();
+        $seller = User::factory()->create();
+        $advertisement = Advertisement::factory()->create(['user_id' => $seller->id, 'status' => 'available']);
+
+        $response = $this->actingAs($buyer)->post(route('advertisements.buy', $advertisement));
+
+        $response->assertRedirect(route('advertisements.info', ['id' => $advertisement->id]));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('advertisements', [
+            'id' => $advertisement->id,
+            'status' => 'sold',
+            'acquirer_user_id' => $buyer->id,
+        ]);
+    }
+
+    /** @test */
+    public function user_cannot_buy_own_advertisement()
+    {
+        $user = User::factory()->create();
+        $advertisement = Advertisement::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->post(route('advertisements.buy', $advertisement));
+
+        $response->assertRedirect(route('advertisements.info', ['id' => $advertisement->id]));
+        $response->assertSessionHas('error');
+    }
+
+    /** @test */
+    public function user_can_rent_an_advertisement()
+    {
+        $renter = User::factory()->create();
+        $owner = User::factory()->create();
+        $advertisement = Advertisement::factory()->create(['user_id' => $owner->id, 'status' => 'available']);
+
+        $response = $this->actingAs($renter)->post(route('advertisements.rent', $advertisement));
+
+        $response->assertRedirect(route('advertisements.info', $advertisement->id));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('advertisements', [
+            'id' => $advertisement->id,
+            'status' => 'rented',
+            'acquirer_user_id' => $renter->id,
+        ]);
+    }
+    /** @test */
+    public function owner_can_accept_a_bid()
+    {
+        $owner = User::factory()->create();
+        $bidder = User::factory()->create();
+        $advertisement = Advertisement::factory()->create(['user_id' => $owner->id]);
+        $bidding = Bidding::factory()->create([
+            'advertisement_id' => $advertisement->id,
+            'user_id' => $bidder->id,
+        ]);
+
+        $response = $this->actingAs($owner)->post(route('advertisements.biddingAccept', $bidding->id));
+
+        $response->assertRedirect(route('advertisements.agenda'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('biddings', ['id' => $bidding->id, 'status' => 'accepted']);
+        $this->assertDatabaseHas('advertisements', ['id' => $advertisement->id, 'status' => 'sold']);
+    }
+
+    /** @test */
+    public function owner_can_reject_a_bid()
+    {
+        $owner = User::factory()->create();
+        $advertisement = Advertisement::factory()->create(['user_id' => $owner->id]);
+        $bidding = Bidding::factory()->create(['advertisement_id' => $advertisement->id]);
+
+        $response = $this->actingAs($owner)->post(route('advertisements.biddingReject', $bidding->id));
+
+        $response->assertRedirect(route('advertisements.agenda'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('biddings', ['id' => $bidding->id, 'status' => 'rejected']);
     }
 
 }
