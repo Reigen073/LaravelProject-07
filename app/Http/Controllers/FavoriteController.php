@@ -7,15 +7,15 @@ use App\Models\Advertisement;
 
 class FavoriteController extends Controller
 {
-    public function index(Request $request)
-    {
-        $user = auth()->user();
+    // public function index(Request $request)
+    // {
+    //     $user = auth()->user();
 
-        // Eager load the advertisement relationship
-        $favorites = $user->favorites()->with('advertisement')->paginate(6);
+    //     // Eager load the advertisement relationship
+    //     $favorites = $user->favorites()->with('advertisement')->paginate(6);
     
-        return view('favorites.index', compact('favorites'));
-    }
+    //     return view('favorites.index', compact('favorites'));
+    // }
 
     public function toggleFavorite($id)
     {

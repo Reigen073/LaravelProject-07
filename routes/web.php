@@ -28,7 +28,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/advertisements/agenda', [AdvertisementController::class, 'agenda'])->name('advertisements.agenda');
     Route::post('/advertisements/{advertisement}/buy/{advertisement2?}', [AdvertisementController::class, 'buy'])->name('advertisements.buy');
     Route::post('/advertisements/{advertisement}/rent', [AdvertisementController::class, 'rent'])->name('advertisements.rent');
-    Route::post('/advertisements/{advertisement}/bidding', [AdvertisementController::class, 'bidding'])->name('advertisements.bidding');
+    Route::post('/advertisements/{advertisement}/bidding', [AdvertisementController::class, 'bidding'])
+    ->name('advertisements.bidding');
     
     Route::post('/reviews/{id}', [ReviewController::class, 'store'])->name('reviews.store');
     
@@ -60,11 +61,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/advertisements/{id}/favorite', [FavoriteController::class, 'toggleFavorite'])->name('advertisements.favorite');
 
-    Route::get('/dashboard', function () {
-        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
-        $contracts = Contract::where('user_id', auth()->id())->get();  // Fetch contracts for the authenticated user
-        return view('dashboard', compact('advertisements', 'contracts'));  // Pass contracts to the view
-    })->middleware('verified')->name('dashboard');
+    Route::get('/dashboard', [AdvertisementController::class, 'dashboard'])->middleware('verified')->name('dashboard');
 });
 
 Route::get('/advertisements/upload', [AdvertisementController::class, 'showUploadForm'])->name('advertisements.upload.form');

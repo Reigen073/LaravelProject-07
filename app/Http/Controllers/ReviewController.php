@@ -32,6 +32,6 @@ class ReviewController extends Controller
             'rating' => $request->rating,
         ]);
 
-        return redirect()->back()->with('success', 'Review geplaatst!');
+        return redirect()->route('advertisements.info', ['id' => $advertisement_id])->with('success', 'Review geplaatst!');
     }
 }
