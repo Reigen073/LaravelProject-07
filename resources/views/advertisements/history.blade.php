@@ -19,6 +19,13 @@
             </div>
         </div>
     @endif
+    @if (session('error'))
+        <div class="flex justify-center">
+            <div class="bg-red-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
     <div class="container mx-auto p-6">
         <div class="bg-white shadow-lg rounded-lg p-6">
             <h3 class="text-xl font-semibold mb-4">{{ __('messages.your_purchased_products') }}</h3>

@@ -9,10 +9,49 @@ use App\Http\Controllers\AdvertisementController;
 
 class ReturnController extends Controller
 {
-    public function index() {
-        $advertisements = Advertisement::where('user_id', auth()->id())->pluck('id');
-        $returns = ReturnRequest::whereIn('advertisement_id', $advertisements)->latest()->paginate(6);
+    public function index(Request $request) {
+        $user = auth()->user();
+
+        $advertisementIds = Advertisement::where('user_id', $user->id)->pluck('id');
+    
+        $returns = ReturnRequest::with(['user', 'advertisement'])
+            ->whereIn('advertisement_id', $advertisementIds)
+            ->when($request->buy_status, function ($query) use ($request) {
+                $query->whereHas('advertisement', function ($q) {
+                    $q->where('type', 'buy');
+                })->where('status', $request->buy_status);
+            })
+            ->when($request->buy_sort, function ($query) use ($request) {
+                $sort = $request->buy_sort;
+                $query->orderBy('created_at', $sort === 'date_asc' ? 'asc' : 'desc');
+            })
+            ->when($request->rent_status, function ($query) use ($request) {
+                $query->whereHas('advertisement', function ($q) {
+                    $q->where('type', 'rent');
+                })->where('status', $request->rent_status);
+            })
+            ->when($request->rent_sort, function ($query) use ($request) {
+                $sort = $request->rent_sort;
+                $query->orderBy('created_at', $sort === 'date_asc' ? 'asc' : 'desc');
+            })
+            ->get();
+    
         return view('returns.index', compact('returns'));
+    }
+
+    protected function applySorting($query, $sort)
+    {
+        switch ($sort) {
+            case 'date_asc':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'date_desc':
+                $query->orderBy('created_at', 'desc');
+                break;
+            default:
+                $query->latest();
+                break;
+        }
     }
     
     public function approve($id)

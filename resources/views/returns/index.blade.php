@@ -17,6 +17,27 @@
         <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 grid grid-cols-2 gap-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h4 class="text-md font-semibold mb-2">{{ __('messages.purchased_products') }}</h4>
+                <form method="GET" action="{{ route('returns.index') }}" class="mb-6 flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <div>
+                            <label for="buy_status" class="font-semibold text-gray-700">Status</label>
+                            <select name="buy_status" id="buy_status" class="border p-2">
+                                <option value="">{{ __('messages.all') }}</option>
+                                <option value="approved" {{ request('buy_status') == 'approved' ? 'selected' : '' }}>{{ __('messages.approved') }}</option>
+                                <option value="pending" {{ request('buy_status') == 'pending' ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                                <option value="rejected" {{ request('buy_status') == 'rejected' ? 'selected' : '' }}>{{ __('messages.rejected') }}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="buy_sort" class="font-semibold text-gray-700">{{ __('messages.sort_by') }}</label>
+                            <select name="buy_sort" id="buy_sort" class="border p-2">
+                                <option value="date_asc" {{ request('buy_sort') == 'date_asc' ? 'selected' : '' }}>{{__('messages.date_asc')}}</option>
+                                <option value="date_desc" {{ request('buy_sort') == 'date_desc' ? 'selected' : '' }}>{{__('messages.date_desc')}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">{{ __('messages.filter') }}</button>
+                </form>
                 @if ($returns->where('advertisement.type', 'buy')->isNotEmpty())
                     <table class="min-w-full bg-white border border-gray-300">
                         <thead>
@@ -70,6 +91,27 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h4 class="text-md font-semibold mb-2">{{ __('messages.rented_products') }}</h4>
+                <form method="GET" action="{{ route('returns.index') }}" class="mb-6 flex justify-between items-center">
+                <div class="flex space-x-4">
+                    <div>
+                        <label for="rent_status" class="font-semibold text-gray-700">Status</label>
+                        <select name="rent_status" id="rent_status" class="border p-2">
+                            <option value="">{{ __('messages.all') }}</option>
+                            <option value="approved" {{ request('rent_status') == 'approved' ? 'selected' : '' }}>{{ __('messages.approved') }}</option>
+                            <option value="pending" {{ request('rent_status') == 'pending' ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                            <option value="rejected" {{ request('rent_status') == 'rejected' ? 'selected' : '' }}>{{ __('messages.rejected') }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="rent_sort" class="font-semibold text-gray-700">{{ __('messages.sort_by') }}</label>
+                        <select name="rent_sort" id="rent_sort" class="border p-2">
+                            <option value="date_asc" {{ request('rent_sort') == 'date_asc' ? 'selected' : '' }}>{{__('messages.date_asc')}}</option>
+                            <option value="date_desc" {{ request('rent_sort') == 'date_desc' ? 'selected' : '' }}>{{__('messages.date_desc')}}</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">{{ __('messages.filter') }}</button>
+            </form>
                 @if ($returns->where('advertisement.type', 'rent')->isNotEmpty())
                     <table class="min-w-full bg-white border border-gray-300">
                         <thead>

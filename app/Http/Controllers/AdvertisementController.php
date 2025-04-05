@@ -467,8 +467,8 @@ class AdvertisementController extends Controller
         }
 
         $advertisements = $query
-            ->where('user_id', $user->id)
-            ->where('status', 'rented')
+            ->where('acquirer_user_id', $user->id)
+            ->where('status', 'sold')
             ->whereNotNull('expires_at')
             ->orderBy('expires_at', 'asc')
             ->paginate(6);
