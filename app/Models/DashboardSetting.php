@@ -17,6 +17,7 @@ class DashboardSetting extends Model
         'show_intro',
         'show_image',
         'show_custom_link',
+        'show_contracts',
         'bg_color',
         'text_color',
     ];

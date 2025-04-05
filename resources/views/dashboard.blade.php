@@ -78,14 +78,23 @@
                 </div>
                 <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_adverts') }}</h3>
+                
+                    <!-- Search Bar -->
+                    <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                        <input type="text" name="search" value="{{ request('search') }}" class="" placeholder="Zoek voor advertenties">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
+                            zoek
+                        </button>
+                    </form>
+                
                     @if ($advertisements->isNotEmpty())
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach ($advertisements as $advertisement)
                                 <div class="border p-4 rounded-lg shadow-md">
                                     @if ($advertisement->image)
                                         <img src="{{ asset('storage/' . $advertisement->image) }}" 
-                                            alt="{{ $advertisement->title }}" 
-                                            class="w-full h-48 object-contain bg-gray-200 rounded-lg mb-4">
+                                             alt="{{ $advertisement->title }}" 
+                                             class="w-full h-48 object-contain bg-gray-200 rounded-lg mb-4">
                                     @endif
                                     <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
                                     <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>
@@ -95,13 +104,17 @@
                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
                                         @if(auth()->check() && auth()->id() === $advertisement->user_id)
                                             <a href="{{ route('advertisements.edit', $advertisement->id) }}" 
-                                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                                               class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                                 {{ __('messages.edit') }}
                                             </a>
                                         @endif
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                
+                        <div class="mt-4">
+                            {{ $advertisements->links() }}
                         </div>
                     @else
                         <p>{{ __('messages.no_adverts') }}.</p>
@@ -110,6 +123,16 @@
 
                 <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
+                
+                    <!-- Search Bar for Favorite Advertisements -->
+                    <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                        <input type="text" name="favorite_search" value="{{ request('favorite_search') }}" 
+                               placeholder="{{ __('zoek') }}" class="border p-2 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Zoek
+                        </button>
+                    </form>
+                
                     @auth
                         @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -131,12 +154,17 @@
                                     </div>
                                 @endforeach
                             </div>
+                
+                            <!-- Pagination links for Favorite Ads -->
+                            <div class="mt-4">
+                                {{ $favoriteAdvertisements->links() }}
+                            </div>
                         @else
                             <p>{{ __('messages.no_favorite_adverts') }}</p>
                         @endif
                     @endauth
-                    
                 </div>
+                
                 <div id="CustomLink-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <form action="{{ route('custom-link.store') }}" method="POST">
                         @csrf
@@ -156,26 +184,35 @@
                     <!-- next -->
                     <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <h3 class="text-lg font-semibold mb-4">{{__('messages.your_contracts')}}</h3>
+                              <!-- Contract search form -->
+                            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                                <input type="text" name="contract_search"  class="border rounded p-2 w-full sm:w-1/3" value="{{ request('contract_search') }}">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 sm:mt-0">Zoek</button>
+                            </form>
                             @auth
                             @if ($contracts->isNotEmpty())
                                 <ul class="space-y-2">
-                                    @foreach ($contracts as $contract)
-                                        <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
-                                            <span>Contract ID: {{ $contract->id }}</span>
-                                            <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
-                                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                📄 {{ __('messages.show_advert') }}
-                                            </a>
+                                 @foreach ($contracts as $contract)
+                            <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
+                                <span> {{ $contract->contract_name  }}</span>
+                                <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    📄 {{ __('messages.show_advert') }}
+                                </a>
 
-                                            <a href="{{ asset('storage/' . $contract->file_path) }}" 
-                                               download="{{ basename($contract->file_path) }}"
-                                               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                                📤 {{ __('messages.download_contract') }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @else
+                                <a href="{{ asset('storage/' . $contract->file_path) }}" 
+                                download="{{ basename($contract->file_path) }}"
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                    📤 {{ __('messages.download_contract') }}
+                                </a>
+                            </li>
+                                @endforeach
+
+                                <!-- Pagination links -->
+                                <div class="mt-4">
+                                    {{ $contracts->links() }}
+                                </div>
+                                @else
                                 <p>{{ __('messages.no_contracts') }}</p>
                             @endif
                         @endauth
@@ -245,13 +282,13 @@
             const customizeBtn = document.getElementById('customize-btn');
             const closeBtn = document.getElementById('close-settings');
             const form = document.getElementById('dashboard-settings-form');
-            const contractSection = document.getElementById('contract-section');
 
             const adsSection = document.getElementById('ads-section');
             const favoritesSection = document.getElementById('favorites-section');
             const introSection = document.getElementById('intro-section');
             const imageSection = document.getElementById('image-section');
             const customLinkSection = document.getElementById('CustomLink-section');
+            const contractSection = document.getElementById('contract-section');
 
             customizeBtn.addEventListener('click', () => {
                 modal.classList.remove('hidden');
@@ -300,7 +337,7 @@
                 document.getElementById('show_ads').checked = settings.show_ads ?? true;
                 document.getElementById('show_favorites').checked = settings.show_favorites ?? true;
                 document.getElementById('show_image').checked = settings.show_image ?? true;
-                document.getElementById('CustomLink-section').checked = settings.show_custom_link ?? true;
+                document.getElementById('show_custom_link').checked = settings.show_custom_link ?? true;
                 document.getElementById('show_contracts').checked = settings.show_contracts ?? true;
 
                 document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
@@ -339,9 +376,9 @@
                 }
                 if (contractSection) 
                 {
-                contractSection.style.display = settings.show_contracts ? 'block' : 'none';
-                contractSection.style.backgroundColor = settings.bg_color;
-                contractSection.style.color = settings.text_color;
+                    contractSection.style.display = settings.show_contracts ? 'block' : 'none';
+                    contractSection.style.backgroundColor = settings.bg_color;
+                    contractSection.style.color = settings.text_color;
                 }
             }
 

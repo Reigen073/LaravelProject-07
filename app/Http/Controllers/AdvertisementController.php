@@ -70,8 +70,17 @@ class AdvertisementController extends Controller
         $advertisements = $query->paginate(6);
 
         $favorites = auth()->user()->favorites()->pluck('advertisement_id');
-        $favoriteAdvertisements = Advertisement::whereIn('id', $favorites)->latest()->paginate(6);
-        $contracts = Contract::where('user_id', auth()->id())->paginate(6);
+        $favoriteAdvertisementsQuery = Advertisement::whereIn('id', $favorites);
+        if ($request->has('favorite_search') && $request->favorite_search) {
+            $favoriteAdvertisementsQuery->where('title', 'like', '%' . $request->favorite_search . '%');
+        }
+         $favoriteAdvertisements = $favoriteAdvertisementsQuery->latest()->paginate(6);
+         $contractsQuery = Contract::where('user_id', auth()->id());
+
+         if ($request->has('contract_search') && $request->contract_search) {
+            $contractsQuery->where('contract_name', 'like', '%' . $request->contract_search . '%');
+        }
+        $contracts = $contractsQuery->paginate(3); 
 
         
         return view('dashboard', compact('advertisements', 'favoriteAdvertisements', 'contracts'));

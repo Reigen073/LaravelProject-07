@@ -15,8 +15,8 @@ class DashboardSettingsController extends Controller
             'show_favorites' => 'boolean',
             'show_intro' => 'boolean',
             'show_image' => 'boolean',
-            'show_custom_link' => 'boolean',
             'show_contracts' => 'boolean',
+            'show_custom_link' => 'boolean',
             'bg_color' => 'required|string',
             'text_color' => 'required|string',
         ]);

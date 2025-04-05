@@ -11,6 +11,7 @@ class Contract extends Model
 
     protected $fillable = [
         'user_id',
+        'contract_name',
         'file_path',
     ];
 
