@@ -24,7 +24,7 @@ class CustomLinkController extends Controller
         $customLink = CustomLink::where('link_name', $link_name)->first();
 
         if (!$customLink) {
-            abort(404, 'Pagina niet gevonden');
+            abort(404, __('messages.page_not_found'));
         }
 
         if (auth()->check()) {

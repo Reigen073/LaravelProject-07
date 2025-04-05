@@ -354,7 +354,7 @@ class AdvertisementController extends Controller
     public function buy(Advertisement $advertisement, Advertisement $advertisement2 = null)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', __('messages.cant_buy_own_advert'));
+            return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('error', __('messages.cant_buy_own_advert'));
         }
 
         $advertisement->status = 'sold';
@@ -366,26 +366,26 @@ class AdvertisementController extends Controller
             $advertisement2->acquirer_user_id = auth()->id();
             $advertisement2->save();
         }
-        return redirect()->route('homepage')->with('success', __('messages.bought_advert'));
+        return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('success', __('messages.bought_advert'));
     }
 
     public function rent(Advertisement $advertisement)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', __('messages.cant_rent_own_advert'));
+            return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('error', __('messages.cant_rent_own_advert'));
         }
 
         $advertisement->status = 'rented';
         $advertisement->acquirer_user_id = auth()->id();
         $advertisement->save();
 
-        return redirect()->route('homepage')->with('success', __('messages.rented_advert'));
+        return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('success', __('messages.rented_advert'));
     }
 
     public function bidding(Request $request, Advertisement $advertisement)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', __('messages.cant_bid_own_advert'));
+            return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('error', __('messages.cant_bid_own_advert'));
         }
         
         $request->validate([
@@ -398,7 +398,7 @@ class AdvertisementController extends Controller
             'bid_amount' => $request->bid_amount,
         ]);
     
-        return redirect()->route('homepage')->with('success', __('messages.bid_placed'));
+        return redirect()->route('advertisements.info', ['id' => $advertisement->id])->with('success', __('messages.bid_placed'));
     }
 
     public function biddingAccept(Request $request, $id){
@@ -406,7 +406,7 @@ class AdvertisementController extends Controller
         $advertisement = Advertisement::findOrFail($bidding->advertisement_id);
 
         if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', __('messages.cant_accept_bid'));
+            return redirect()->route('advertisments.agenda')->with('error', __('messages.cant_accept_bid'));
         }
 
         $bidding->status = 'accepted';

@@ -7,6 +7,20 @@
 
     <div class="py-10 bg-gray-100">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
+                @if (session('success'))
+                <div class="flex justify-center">
+                    <div class="bg-green-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            @endif
+                @if (session('error'))
+                <div class="flex justify-center">
+                    <div class="bg-red-500 text-white p-3 rounded-lg shadow-md text-center w-1/2">
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-6">
                 @if ($advertisement->image)
                     <img src="{{ asset('storage/' . $advertisement->image) }}" 

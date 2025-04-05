@@ -212,5 +212,6 @@ return [
     'only_return_you_bought' => 'Je kunt alleen producten retourneren die je hebt gekocht.',
     'product_returned' => 'Product succesvol geretourneerd.',
     'review_placed' => 'Beoordeling succesvol geplaatst.',
+    'page_not_found' => 'Pagina niet gevonden',
 
 ];

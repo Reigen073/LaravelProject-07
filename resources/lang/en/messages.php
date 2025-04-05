@@ -213,4 +213,5 @@ return [
     'only_return_you_bought' => 'You can only return products you bought.',
     'product_returned' => 'Product returned successfully.',
     'review_placed' => 'Review placed successfully.',
+    'page_not_found' => 'Page not found',
 ];
