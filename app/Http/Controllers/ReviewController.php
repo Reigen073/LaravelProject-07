@@ -28,7 +28,7 @@ class ReviewController extends Controller
                 'rating' => $request->rating,
             ]);
         
-            return redirect()->route('advertisements.info', ['id' => $advertisement_id])->with('success', 'Review geplaatst!');
+            return redirect()->route('advertisements.info', ['id' => $advertisement_id])->with('success', __('messages.review_placed'));
         } else {
             $advertisement_id = null;
             $advertiser_id = $id;
@@ -42,6 +42,6 @@ class ReviewController extends Controller
             'rating' => $request->rating,
         ]);
 
-        return redirect()->route('profile.show', ['user' => $advertiser_id])->with('success', 'Review geplaatst!');
+        return redirect()->route('profile.show', ['user' => $advertiser_id])->with('success', __('messages.review_placed'));
     }
 }

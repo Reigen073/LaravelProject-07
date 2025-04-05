@@ -106,7 +106,7 @@ class AdvertisementController extends Controller
         ]);
 
         if (strtotime($request->expires_at) <= strtotime(now()->toDateString())) {
-            return redirect()->back()->with('error', 'De vervaldatum moet na vandaag liggen.');
+            return redirect()->back()->with('error', __('messages.date_must_be_after_today'));
         }
         $user = auth()->user();
         $advertisementCount = Advertisement::where('user_id', $user->id)
@@ -114,7 +114,7 @@ class AdvertisementController extends Controller
             ->count();
 
         if ($advertisementCount >= 4) {
-            return redirect()->back()->with('error', 'Je mag maximaal 4 advertenties van elk type hebben.');
+            return redirect()->back()->with('error', __('messages.max_of_4_adverts'));
         }
 
         $advertisement = Advertisement::create([
@@ -138,7 +138,7 @@ class AdvertisementController extends Controller
         $advertisement->qr_code = $this->generateQrCode($advertisement);
         $advertisement->save();
 
-        return redirect('dashboard')->with('success', 'Advertentie geplaatst!');
+        return redirect('dashboard')->with('success', __('messages.placed_advert'));
     }
 
 
@@ -157,7 +157,7 @@ class AdvertisementController extends Controller
     public function edit(Advertisement $advertisement)
     {
         if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je mag deze advertentie niet bewerken.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_edit_advert'));
         }
         $advertisements = Advertisement::where('user_id', auth()->id())->latest()->get();
         return view('advertisements.edit', compact('advertisement', 'advertisements'));
@@ -165,7 +165,7 @@ class AdvertisementController extends Controller
     public function update(Request $request, Advertisement $advertisement)
     {
         if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je mag deze advertentie niet bewerken.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_edit_advert'));
             }
 
         $request->validate([
@@ -208,7 +208,7 @@ class AdvertisementController extends Controller
     public function destroy(Advertisement $advertisement)
     {
         $advertisement->delete();
-        return redirect()->route('dashboard')->with('success', 'Advertentie succesvol verwijderd.');
+        return redirect()->route('dashboard')->with('success', __('messages.advert_deleted_succesfully'));
     }
 
     protected function applySorting($query, $sort)
@@ -354,7 +354,7 @@ class AdvertisementController extends Controller
     public function buy(Advertisement $advertisement, Advertisement $advertisement2 = null)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je kunt je eigen advertentie niet kopen.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_buy_own_advert'));
         }
 
         $advertisement->status = 'sold';
@@ -366,26 +366,26 @@ class AdvertisementController extends Controller
             $advertisement2->acquirer_user_id = auth()->id();
             $advertisement2->save();
         }
-        return redirect()->route('homepage')->with('success', 'Advertentie gekocht!');
+        return redirect()->route('homepage')->with('success', __('messages.bought_advert'));
     }
 
     public function rent(Advertisement $advertisement)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je kunt je eigen advertentie niet huren.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_rent_own_advert'));
         }
 
         $advertisement->status = 'rented';
         $advertisement->acquirer_user_id = auth()->id();
         $advertisement->save();
 
-        return redirect()->route('homepage')->with('success', 'Advertentie gehuurd!');
+        return redirect()->route('homepage')->with('success', __('messages.rented_advert'));
     }
 
     public function bidding(Request $request, Advertisement $advertisement)
     {
         if ($advertisement->user_id === auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je kunt niet op je eigen advertentie bieden.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_bid_own_advert'));
         }
         
         $request->validate([
@@ -398,7 +398,7 @@ class AdvertisementController extends Controller
             'bid_amount' => $request->bid_amount,
         ]);
     
-        return redirect()->route('homepage')->with('success', 'Bod succesvol geplaatst!');
+        return redirect()->route('homepage')->with('success', __('messages.bid_placed'));
     }
 
     public function biddingAccept(Request $request, $id){
@@ -406,7 +406,7 @@ class AdvertisementController extends Controller
         $advertisement = Advertisement::findOrFail($bidding->advertisement_id);
 
         if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('dashboard')->with('error', 'Je kunt dit bod niet accepteren.');
+            return redirect()->route('dashboard')->with('error', __('messages.cant_accept_bid'));
         }
 
         $bidding->status = 'accepted';
@@ -416,7 +416,7 @@ class AdvertisementController extends Controller
         $advertisement->acquirer_user_id = $bidding->user_id;
         $advertisement->save();
 
-        return redirect()->route('advertisements.agenda')->with('success', 'Bod geaccepteerd!');
+        return redirect()->route('advertisements.agenda')->with('success', __('messages.bid_accepted'));
     }
 
     public function biddingReject(Request $request, $id){
@@ -424,13 +424,13 @@ class AdvertisementController extends Controller
         $advertisement = Advertisement::findOrFail($bidding->advertisement_id);
 
         if ($advertisement->user_id !== auth()->id()) {
-            return redirect()->route('advertisments.agenda')->with('error', 'Je kunt dit bod niet afwijzen.');
+            return redirect()->route('advertisments.agenda')->with('error', __('messages.cant_reject_bid'));
         }
 
         $bidding->status = 'rejected';
         $bidding->save();
 
-        return redirect()->route('advertisements.agenda')->with('success', 'Bod afgewezen!');
+        return redirect()->route('advertisements.agenda')->with('success', __('messages.bid_rejected'));
     }
 
     public function history(Request $request){
@@ -483,7 +483,7 @@ class AdvertisementController extends Controller
         $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
 
         if (array_diff($requiredColumns, $header)) {
-            return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
+            return redirect()->back()->with('error', __('messages.csv_wrong_format'));
         }
     
         $user = auth()->user();
@@ -498,7 +498,7 @@ class AdvertisementController extends Controller
     
         foreach ($csvData as $row) {
             if (count($row) !== count($header)) {
-                return redirect()->back()->with('error', 'CSV-bestand heeft een onjuiste hoeveelheid gegevens in een van de rijen.');
+                return redirect()->back()->with('error', __('messages.csv_incorrect_amountdata'));
             }
     
             $row = array_combine($header, $row);
@@ -525,12 +525,13 @@ class AdvertisementController extends Controller
         }
     
         if ($addedAds == 0) {
-            return redirect()->route('dashboard')->with('error', 'Geen advertenties toegevoegd. Limiet al bereikt.');
+            return redirect()->route('dashboard')->with('error', __('messages.csv_no_adverts_added'));
         }
     
-        $message = "$addedAds advertenties succesvol geüpload!";
+        $message = __('messages.upload_success', ['count' => $addedAds]);
+
         if ($skippedAds > 0) {
-            $message .= " $skippedAds advertenties zijn niet toegevoegd omdat de limiet per type is bereikt.";
+            $message .= ' ' . __('messages.upload_skipped', ['count' => $skippedAds]);
         }
     
         return redirect()->route('dashboard')->with('success', $message);
