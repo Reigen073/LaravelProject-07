@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Contracten Uploaden') }}
+            {{ __('messages.upload_contracts') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
             <form action="{{ route('contracts.upload') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
-                    <label for="user_id" class="block text-sm font-medium text-gray-700">Kies een gebruiker</label>
+                    <label for="user_id" class="block text-sm font-medium text-gray-700">{{ __('messages.select_user') }}</label>
                     <select name="user_id" id="user_id" class="block w-full mt-1">
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="contract" class="block text-sm font-medium text-gray-700">Upload Contract</label>
+                    <label for="contract" class="block text-sm font-medium text-gray-700">{{ __('messages.upload_contract') }}</label>
                     <input type="file" name="contract" id="contract" class="block w-full mt-1">
                     @error('contract')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -36,7 +36,7 @@
                 </div>
 
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Upload Contract
+                    {{ __('messages.upload_contract') }}
                 </button>
             </form>
         </div>

@@ -7,20 +7,30 @@ use Illuminate\Http\Request;
 
 class CustomLinkController extends Controller
 {
-    // Method to handle the form submission
     public function store(Request $request)
     {
-        // Validate the link name
         $request->validate([
-            'link_name' => 'required|string|unique:custom_links', // Ensure it's unique
+            'link_name' => 'required|string|max:255|unique:custom_links',
         ]);
 
-        // Create a new CustomLink entry in the database
         $customLink = new CustomLink();
         $customLink->link_name = $request->link_name;
         $customLink->save();
 
-        // Redirect back with the link name stored in session
         return redirect()->back()->with('link_name', $customLink->link_name);
+    }
+    public function handleLinkName($link_name)
+    {
+        $customLink = CustomLink::where('link_name', $link_name)->first();
+
+        if (!$customLink) {
+            abort(404, 'Pagina niet gevonden');
+        }
+
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->route('login');
     }
 }

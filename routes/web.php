@@ -16,7 +16,7 @@ use App\Http\Controllers\CustomLinkController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Models\Contract;
-
+use App\Http\Middleware\SetLocale;
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
 Route::middleware(['auth'])->group(function () {
@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{id}/reject', [ReturnController::class, 'reject'])->name('returns.reject');
     });
 
-    Route::middleware([RoleCheck::class . ':particulier_adverteerder,zakelijke_adverteerder','admin'])->group(function () {
+    Route::middleware([RoleCheck::class . ':particulier_adverteerder,zakelijke_adverteerder,admin'])->group(function () {
         Route::prefix('advertisements')->group(function () {
             Route::get('/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
             Route::post('/', [AdvertisementController::class, 'store'])->name('advertisements.store');
@@ -78,44 +78,49 @@ Route::prefix('register')->group(function () {
     Route::get('/', [RegisterController::class, 'show'])->name('register');
     Route::post('/', [RegisterController::class, 'register']);
 });
-Route::post('/custom-link', function (Request $request) {
-    // Validate the input directly on the $request object
-    $request->validate([
-        'link_name' => 'required|string|max:255',
-    ]);
 
-    // Save the custom link name
-    CustomLink::create([
-        'link_name' => $request->input('link_name'),
-    ]);
+Route::get('/lang/{locale}', function ($locale) {
+    if (! in_array($locale, ['en', 'nl'])) {
+        abort(400);
+    }
 
-    // Redirect back with success message
-    return back()->with('success', 'Custom link name saved!');
-    })->name('custom-link.store');
-    Route::get('/landing', [LandingController::class, 'index'])->name('landing.page');
-    Route::get('/{link_name}', function ($link_name) {
-        // Hier controleer je of de link bestaat
-        $customLink = CustomLink::where('link_name', $link_name)->first();
+    session(['locale' => $locale]);
 
-        // Als de link niet bestaat, toon een 404-pagina
-        if (!$customLink) {
-            return abort(404, 'Pagina niet gevonden');
-        }
+    return redirect()->back();
+})->middleware(SetLocale::Class)->name('lang.switch');
+// Route::post('/custom-link', function (Request $request) {
+//     $request->validate([
+//         'link_name' => 'required|string|max:255',
+//     ]);
 
-        // Controleer of de gebruiker is ingelogd (optioneel, afhankelijk van je vereisten)
-        if (Auth::check()) {
-            // Als de gebruiker is ingelogd, laat ze het dashboard zien
-            return redirect()->route('dashboard');
-        }
+//     CustomLink::create([
+//         'link_name' => $request->input('link_name'),
+//     ]);
 
-        // Als de gebruiker niet is ingelogd, kun je ze naar een andere pagina sturen
-        return redirect()->route('login');
-    });
-    Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');
+//     return back()->with('success', 'Custom link name saved!');
+//     })->name('custom-link.store');
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/admin/contracts', [ContractController::class, 'index'])->name('contracts.index');
-        Route::post('/admin/contracts/upload', [ContractController::class, 'upload'])->name('contracts.upload');
-    });
+//     Route::get('/landing', [LandingController::class, 'index'])->name('landing.page');
+//     Route::get('/{link_name}', function ($link_name) {
+//         $customLink = CustomLink::where('link_name', $link_name)->first();
+
+//         if (!$customLink) {
+//             return abort(404, 'Pagina niet gevonden');
+//         }
+
+//         if (Auth::check()) {
+//             return redirect()->route('dashboard');
+//         }
+
+//         return redirect()->route('login');
+//     });
+Route::get('/{link_name}', [CustomLinkController::class, 'handleLinkName']);
+
+Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');
+
+Route::middleware(['auth', RoleCheck::class . ':admin'])->group(function () {
+    Route::get('/admin/contracts', [ContractController::class, 'index'])->name('contracts.index');
+    Route::post('/admin/contracts/upload', [ContractController::class, 'upload'])->name('contracts.upload');
+});
     
 require __DIR__.'/auth.php';

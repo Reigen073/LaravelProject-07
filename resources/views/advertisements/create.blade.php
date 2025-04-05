@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Nieuwe Advertentie
+           {{ __('messages.new_advertisement') }}
         </h2>
         
     </x-slot>
@@ -17,27 +17,27 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block" 
             href="{{ route('advertisements.upload.form') }}">
-            Upload via CSV
+            {{ __('messages.upload_csv') }}
             </a>
-            <form method="POST" action="/advertisements" enctype="multipart/form-data"> <!-- enctype voor bestand uploaden -->
+            <form method="POST" action="/advertisements" enctype="multipart/form-data">
                 @csrf
                 <div>
-                    <label for="title">Titel</label>
+                    <label for="title">{{ __('messages.title') }}</label>
                     <input type="text" name="title" id="title" class="block w-full border p-2" required>
                 </div>
 
                 <div class="mt-4">
-                    <label for="description">Beschrijving</label>
+                    <label for="description">{{ __('messages.description') }}</label>
                     <textarea name="description" id="description" class="block w-full border p-2" required></textarea>
                 </div>
 
                 <div class="mt-4">
-                    <label for="price">Prijs (€)</label>
+                    <label for="price">{{ __('messages.price') }} (€)</label>
                     <input type="number" name="price" id="price" step="0.01" class="block w-full border p-2" required>
                 </div>
 
                 <div class="mt-4">
-                    <label for="category">Categorie</label>
+                    <label for="category">{{ __('messages.category') }}</label>
                     <select name="category" id="category" class="block w-full border p-2" required>
                         <option value="games">Games</option>
                         <option value="household">Huishoud</option>
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <label for="condition">Conditie</label>
+                    <label for="condition">{{ __('messages.condition') }}</label>
                     <select name="condition" id="condition" class="block w-full border p-2" required>
                         <option value="new">Nieuw</option>
                         <option value="used">Gebruikt</option>
@@ -73,23 +73,23 @@
                 </div>
 
                 <div class="mt-4">
-                    <label for="image">Afbeelding</label>
+                    <label for="image">{{ __('messages.image') }}</label>
                     <input type="file" name="image" id="image" class="block w-full border p-2" accept="image/*">
                 </div>
 
                 <div class="mt-4">
-                    <label for="expires_at">Verloopt op</label>
+                    <label for="expires_at">{{ __('messages.expires_on') }} </label>
                     <input type="date" name="expires_at" id="expires_at" class="block w-full border p-2" required>
                 </div>
                 <div>
-                    Instellingen voor slijtage
+                    {{ __('messages.settings_wear') }}
                 </div>
                 <div class="mt-4">
-                    <label for="wear_rate">Slijtagesnelheid (0-1)</label>
+                    <label for="wear_rate">{{ __('messages.wear_rate') }} (0-1)</label>
                     <input type="number" name="wear_rate" id="wear_rate" class="block w-full border p-2" step="0.01" min="0" max="1" required>
                 </div>
                 <div class="mt-6">
-                    <label for="related_advertisements" class="block text-lg font-semibold mb-2">Gerelateerde advertenties</label>
+                    <label for="related_advertisements" class="block text-lg font-semibold mb-2">{{ __('messages.related_adverts') }}</label>
                     <div class="border p-4 rounded-lg shadow-md bg-gray-50 overflow-y-auto" style="max-height: calc(3 * 40px);">
                         @foreach ($advertisements as $advertisement)
                             <div class="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded">
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Plaatsen</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">{{ __('messages.place_advertisement') }}</button>
                 </div>
             </form>
         </div>

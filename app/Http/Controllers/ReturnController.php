@@ -11,7 +11,7 @@ class ReturnController extends Controller
 {
     public function index() {
         $advertisements = Advertisement::where('user_id', auth()->id())->pluck('id');
-        $returns = ReturnRequest::whereIn('advertisement_id', $advertisements)->latest()->get();
+        $returns = ReturnRequest::whereIn('advertisement_id', $advertisements)->latest()->paginate(6);
         return view('returns.index', compact('returns'));
     }
     

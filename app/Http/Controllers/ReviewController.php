@@ -17,10 +17,10 @@ class ReviewController extends Controller
         ]);
 
         if ($request->type === 'advertisement') {
-            $advertisement_id = Advertisement::findOrFail($id)->id; // Zorgt ervoor dat je alleen de ID opslaat
-            $advertiser_id = null; // Zorg dat er geen dubbele ID's worden opgeslagen
+            $advertisement_id = Advertisement::findOrFail($id)->id; 
+            $advertiser_id = null;
         } else {
-            $advertisement_id = null; // Zorg ervoor dat 'advertisement_id' expliciet NULL wordt als het niet gebruikt wordt
+            $advertisement_id = null;
             $advertiser_id = $id;
         }
         

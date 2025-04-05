@@ -8,6 +8,7 @@ use App\Models\Bidding;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Middleware\RoleCheck;
+use App\Models\Contract;
 
 class AdvertisementController extends Controller
 {
@@ -70,8 +71,10 @@ class AdvertisementController extends Controller
 
         $favorites = auth()->user()->favorites()->pluck('advertisement_id');
         $favoriteAdvertisements = Advertisement::whereIn('id', $favorites)->latest()->paginate(6);
+        $contracts = Contract::where('user_id', auth()->id())->paginate(6);
+
         
-        return view('dashboard', compact('advertisements', 'favoriteAdvertisements'));
+        return view('dashboard', compact('advertisements', 'favoriteAdvertisements', 'contracts'));
     }
     
     
@@ -208,31 +211,152 @@ class AdvertisementController extends Controller
         return redirect()->route('dashboard')->with('success', 'Advertentie succesvol verwijderd.');
     }
 
-    public function agenda(){
+    protected function applySorting($query, $sort)
+    {
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default:
+                $query->latest();
+                break;
+        }
+    }
+
+    public function agenda(Request $request){
         $user = auth()->user();
+
+        $myRentedQuery = Advertisement::query();
+        $expiringQuery = Advertisement::query();
+        $rentedOutQuery = Advertisement::query();
+        $biddingsQuery = Bidding::query();
+
+        if ($request->filter_set === 'expiring') {
+            if ($request->has('search') && $request->search) {
+                $expiringQuery->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->has('category') && $request->category) {
+                $expiringQuery->where('category', $request->category);
+            }
+
+            if ($request->has('condition') && $request->condition) {
+                $expiringQuery->where('condition', $request->condition);
+            }
+
+            if ($request->has('status') && $request->status) {
+                $expiringQuery->where('status', $request->status);
+            }
+
+            if ($request->filled('sort')) {
+                $this->applySorting($expiringQuery, $request->sort);
+            }
+        }
+
+        if ($request->filter_set === 'rentedout') {
+            if ($request->has('search') && $request->search) {
+                $rentedOutQuery->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->has('category') && $request->category) {
+                $rentedOutQuery->where('category', $request->category);
+            }
+
+            if ($request->has('condition') && $request->condition) {
+                $rentedOutQuery->where('condition', $request->condition);
+            }
+
+            if ($request->has('status') && $request->status) {
+                $rentedOutQuery->where('status', $request->status);
+            }
+
+            if ($request->filled('sort')) {
+                $this->applySorting($rentedOutQuery, $request->sort);
+            }
+        }
+
+        if ($request->filter_set === 'myrented') {
+            if ($request->has('search') && $request->search) {
+                $myRentedQuery->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->has('category') && $request->category) {
+                $myRentedQuery->where('category', $request->category);
+            }
+
+            if ($request->has('condition') && $request->condition) {
+                $myRentedQuery->where('condition', $request->condition);
+            }
+
+            if ($request->has('status') && $request->status) {
+                $myRentedQuery->where('status', $request->status);
+            }
+
+            if ($request->filled('sort')) {
+                $this->applySorting($myRentedQuery, $request->sort);
+            }
+        }
+
+        if ($request->filter_set === 'bidding') {
+            if ($request->has('search') && $request->search) {
+                $biddingsQuery->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->has('category') && $request->category) {
+                $biddingsQuery->where('category', $request->category);
+            }
+
+            if ($request->has('condition') && $request->condition) {
+                $biddingsQuery->where('condition', $request->condition);
+            }
+
+            if ($request->has('status') && $request->status) {
+                $biddingsQuery->where('status', $request->status);
+            }
+
+            if ($request->filled('sort')) {
+                $this->applySorting($biddingsQuery, $request->sort);
+            }
+        }
 
         if ($user->role === 'gebruiker') {
             $advertisements = Advertisement::where('acquirer_user_id', $user->id)
-                ->where('status', 'rented')
-                ->whereNotNull('expires_at')
-                ->orderBy('expires_at', 'asc')
-                ->get();
+            ->where('status', 'rented')
+            ->whereNotNull('expires_at')
+            ->orderBy('expires_at', 'asc')
+            ->paginate(6);
 
             return view('advertisements.agenda', compact('advertisements'));
         } else {
-            $expiringAdvertisements = Advertisement::where('user_id', $user->id)
-                ->whereNotNull('expires_at')
-                ->where('expires_at', '>=', now())
-                ->orderBy('expires_at', 'asc')
-                ->get();
+            $expiringAdvertisements = $expiringQuery
+            ->where('user_id', $user->id)
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '>=', now())
+            ->orderBy('expires_at', 'asc')
+            ->paginate(6);
 
-            $rentedAdvertisements = Advertisement::where('user_id', $user->id)
+            $rentedAdvertisements = $rentedOutQuery
+                ->where('user_id', $user->id)
                 ->where('status', 'rented')
                 ->whereNotNull('expires_at')
                 ->orderBy('expires_at', 'asc')
-                ->get();
+                ->paginate(6);
+
+            $biddings = $biddingsQuery
+                ->where('user_id', $user->id)
+                ->paginate(6);
+
             
-            $biddings = Bidding::with(['advertisement', 'user'])->get();
+            $biddings = Bidding::with(['advertisement', 'user'])->paginate(6);
 
 
             return view('advertisements.agenda', compact('expiringAdvertisements', 'rentedAdvertisements', 'biddings'));
@@ -279,8 +403,6 @@ class AdvertisementController extends Controller
         $request->validate([
             'bid_amount' => 'required|numeric|min:0.01',
         ]);
-
-        
     
         Bidding::create([
             'user_id' => auth()->id(),
@@ -323,13 +445,34 @@ class AdvertisementController extends Controller
         return redirect()->route('advertisements.agenda')->with('success', 'Bod afgewezen!');
     }
 
-    public function history(){
+    public function history(Request $request){
         $user = auth()->user();
-        $advertisements = Advertisement::where('acquirer_user_id', $user->id)
-            ->where('status', 'sold')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Advertisement::query();
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+        if ($request->has('category') && $request->category) {
+            $query->where('category', $request->category);
+        }
+        if ($request->has('condition') && $request->condition) {
+            $query->where('condition', $request->condition);
+        }
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('sort')) {
+            $this->applySorting($query, $request->sort);
+        } else {
+            $query->latest(); 
+        }
 
+        $advertisements = $query
+            ->where('user_id', $user->id)
+            ->where('status', 'rented')
+            ->whereNotNull('expires_at')
+            ->orderBy('expires_at', 'asc')
+            ->paginate(6);
+            
         return view('advertisements.history', compact('advertisements'));
     }
     public function favorites()
@@ -350,8 +493,7 @@ class AdvertisementController extends Controller
         $header = array_shift($csvData);
     
         $requiredColumns = ['title', 'description', 'price', 'category', 'type', 'status', 'condition', 'expires_at'];
-    
-        // Check if all required columns exist in the CSV
+
         if (array_diff($requiredColumns, $header)) {
             return redirect()->back()->with('error', 'CSV-bestand heeft een onjuist formaat.');
         }
@@ -374,13 +516,11 @@ class AdvertisementController extends Controller
             $row = array_combine($header, $row);
             $type = $row['type'];
     
-            // **Check current total count for this type before adding**
             if (($advertisementCounts[$type] ?? 0) >= 4) {
                 $skippedAds++;
-                continue; // Skip this advertisement if the limit is reached
+                continue;
             }
     
-            // **Insert the new advertisement**
             Advertisement::create([
                 'user_id' => $user->id,
                 'title' => $row['title'],
@@ -392,8 +532,6 @@ class AdvertisementController extends Controller
                 'condition' => $row['condition'],
                 'expires_at' => $row['expires_at'],
             ]);
-    
-            // **Increment the count for this type**
             $advertisementCounts[$type] = ($advertisementCounts[$type] ?? 0) + 1;
             $addedAds++;
         }

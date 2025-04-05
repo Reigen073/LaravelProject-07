@@ -2,31 +2,36 @@
     <x-slot name="header">
         <h2 class="flex justify-between font-semibold text-xl text-gray-800 leading-tight space-x-2">
             {{ __('Dashboard') }}
+
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
+               href="{{ route('homepage') }}">
+                {{ __('messages.homepage') }}
+            </a>
             
             @auth
                 @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
                     <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('advertisements.create') }}">
-                        {{ __('Maak advertenties') }}
+                        {{ __('messages.create_advert') }}
                     </a>
                 @endif
             @endauth
             
             <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.agenda') }}">
-                {{ __('Bekijk advertenties in agenda') }}
+                {{ __('messages.show_advert') }}
             </a>
     
             <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                href="{{ route('advertisements.history') }}">
-                {{ __('Gekochte producten') }}
+                {{ __('messages.bought_products') }}
             </a>
     
             @auth
                 @if (in_array(auth()->user()->role, ['particulier_adverteerder', 'zakelijke_adverteerder', 'admin']))
                     <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="{{ route('returns.index') }}">
-                        {{ __('Retourverzoeken') }}
+                        {{ __('messages.retour_requests') }}
                     </a>
                 @endif
             @endauth
@@ -35,10 +40,16 @@
                 @if (auth()->user()->role === 'admin')
                     <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
                        href="http://laravelproject.test/admin/contracts">
-                        {{ __('Admin Contracts') }}
+                        {{ __('messages.admin_contracts') }}
                     </a>
                 @endif
             @endauth
+            <form action="{{ route('lang.switch', 'en') }}" method="GET" class="inline">
+                <button type="submit" class="text-sm text-gray-700 hover:underline">EN</button>
+            </form>
+            <form action="{{ route('lang.switch', 'nl') }}" method="GET" class="inline ml-2">
+                <button type="submit" class="text-sm text-gray-700 hover:underline">NL</button>
+            </form>
     
             @auth
                 <form method="POST" action="{{ route('logout') }}">
@@ -56,17 +67,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div id="intro-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Introductie</h3>
+                <h3 class="text-lg font-semibold mb-4">{{ __('messages.introduction') }}</h3>
                 <p class="text-gray-700 mb-6">
                     Welkom op je dashboard! Hier kun je je advertenties beheren, je favoriete advertenties bekijken en meer. Gebruik de onderstaande knoppen om advertenties te plaatsen, favorieten te beheren of retourverzoeken in te dienen. Als je je dashboard wilt aanpassen, klik dan op de instellingenknop.
                 </p>
                 </div>
                 <div id="image-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">Image</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.image') }}</h3>
                     <img src="{{ asset('images/sky.jpg') }}" alt="Sky Image">
                 </div>
                 <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">Jouw Advertenties</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_adverts') }}</h3>
                     @if ($advertisements->isNotEmpty())
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach ($advertisements as $advertisement)
@@ -81,11 +92,11 @@
                                     <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
                                     <div class="mt-4 flex gap-2">
                                         <a href="{{ route('advertisements.info', $advertisement->id) }}"
-                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Bekijk advertentie</a>
+                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
                                         @if(auth()->check() && auth()->id() === $advertisement->user_id)
                                             <a href="{{ route('advertisements.edit', $advertisement->id) }}" 
                                                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                                                Bewerken
+                                                {{ __('messages.edit') }}
                                             </a>
                                         @endif
                                     </div>
@@ -93,12 +104,12 @@
                             @endforeach
                         </div>
                     @else
-                        <p>Je hebt nog geen advertenties geplaatst.</p>
+                        <p>{{ __('messages.no_adverts') }}.</p>
                     @endif
                 </div>
 
                 <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">Jouw Favoriete Advertenties</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
                     @auth
                         @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -109,11 +120,11 @@
                                         <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
                                         <div class="mt-4">
                                             <a href="{{ route('advertisements.info', $advertisement->id) }}"
-                                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Bekijk advertentie</a>
+                                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
                                             <form action="{{ route('advertisements.favorite', $advertisement->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 <button type="submit" class="text-red-500 font-bold mt-4">
-                                                    ❌ Verwijder uit Favorieten
+                                                    ❌ {{ __('messages.remove_favorite') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -121,7 +132,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p>Je hebt nog geen favoriete advertenties.</p>
+                            <p>{{ __('messages.no_favorite_adverts') }}</p>
                         @endif
                     @endauth
                     
@@ -129,22 +140,22 @@
                 <div id="CustomLink-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <form action="{{ route('custom-link.store') }}" method="POST">
                         @csrf
-                        <label for="link_name">Link Name</label>
+                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.link_name') }}</h3>
                         <input type="text" name="link_name" id="link_name" required>
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Sla link op
+                           {{ __('messages.save_link') }}
                         </button>
                     </form>
                 
                     @if(session('link_name'))
                         <p class="text-green-500 mt-4">
-                            Je link is: <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
+                           {{ __("messages.your_link_is") }} <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
                         </p>
                     @endif
                 </div>
                     <!-- next -->
                     <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4">Jouw Contracten</h3>
+                            <h3 class="text-lg font-semibold mb-4">{{__('messages.your_contracts')}}</h3>
                             @auth
                             @if ($contracts->isNotEmpty())
                                 <ul class="space-y-2">
@@ -153,19 +164,19 @@
                                             <span>Contract ID: {{ $contract->id }}</span>
                                             <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
                                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                📄 Bekijk
+                                                📄 {{ __('messages.show_advert') }}
                                             </a>
-                                            <!-- Direct Download Link -->
+
                                             <a href="{{ asset('storage/' . $contract->file_path) }}" 
                                                download="{{ basename($contract->file_path) }}"
                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                                📤 Download Contract
+                                                📤 {{ __('messages.download_contract') }}
                                             </a>
                                         </li>
                                     @endforeach
                                 </ul>
                             @else
-                                <p>Je hebt nog geen contracten geüpload.</p>
+                                <p>{{ __('messages.no_contracts') }}</p>
                             @endif
                         @endauth
                         
@@ -177,63 +188,58 @@
         </div>
     </div>
 
-    <!-- Customize Dashboard Button -->
     <div class="flex justify-end pr-6 mb-4">
         <button id="customize-btn"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            ⚙️ Customize Dashboard
+            ⚙️ {{ __('messages.customize_dashboard') }}
         </button>
     </div>
 
-    <!-- Dashboard Settings Modal -->
-    <div id="dashboard-settings-modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div id="dashboard-settings-modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 items-center justify-center hidden">
         <div class="bg-white p-6 rounded-lg w-full max-w-lg space-y-4">
-            <h2 class="text-xl font-bold">Dashboard Instellingen</h2>
+            <h2 class="text-xl font-bold">{{__('messages.dashboard_settings')}}</h2>
 
             <form id="dashboard-settings-form">
                 @csrf
 
                 <label class="block">
-                    <input type="checkbox" name="show_ads" id="show_ads"> Toon Advertenties
+                    <input type="checkbox" name="show_ads" id="show_ads"> {{ __('messages.show_adverts') }}
                 </label>
 
                 <label class="block">
-                    <input type="checkbox" name="show_favorites" id="show_favorites"> Toon Favorieten
+                    <input type="checkbox" name="show_favorites" id="show_favorites"> {{ __('messages.show_favorites') }}
                 </label>
                 <label class="block">
-                    <input type="checkbox" name="show_intro" id="show_intro"> Toon Introductie
+                    <input type="checkbox" name="show_intro" id="show_intro"> {{ __('messages.show_instructions') }}
                 </label>
                 <label class="block">
-                    <input type="checkbox" name="show_image" id="show_image"> Toon Afbeeldingen
+                    <input type="checkbox" name="show_image" id="show_image"> {{ __('messages.show_images') }}
                 </label>
                 <label class="block">
-                    <input type="checkbox" name="show_custom_link" id="show_custom_link"> Toon Custom Link Sectie
+                    <input type="checkbox" name="show_custom_link" id="show_custom_link"> {{ __('messages.show_custom_link_section') }}
                 </label>
                 <label class="block">
-                    <input type="checkbox" name="show_contracts" id="show_contracts"> Toon Contracten
+                    <input type="checkbox" name="show_contracts" id="show_contracts"> {{ __('messages.show_contracts') }}
                 </label>
                 
                 <label class="block mt-4">
-                    Achtergrondkleur:
+                    {{ __('messages.background_color') }}:
                     <input type="color" name="bg_color" id="bg_color" class="ml-2">
                 </label>
 
                 <label class="block mt-4">
-                    Tekstkleur:
+                    {{ __('messages.text_color') }}:
                     <input type="color" name="text_color" id="text_color" class="ml-2">
                 </label>
 
                 <div class="mt-4 flex justify-end gap-2">
-                    <button type="button" id="close-settings" class="bg-gray-500 text-white px-4 py-2 rounded">Sluiten</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Opslaan</button>
+                    <button type="button" id="close-settings" class="bg-gray-500 text-white px-4 py-2 rounded">{{ __('messages.close') }}</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">{{ __('messages.save') }}</button>
                 </div>
             </form>
-
-            
         </div>
     </div>
 
-    <!-- JS Settings Logic -->
     <script>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('dashboard-settings-modal');

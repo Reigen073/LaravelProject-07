@@ -11,6 +11,15 @@
                 <a href="{{ route('dashboard') }}" class="text-blue-600 font-bold hover:underline">
                     Dashboard
                 </a>
+
+
+                <form action="{{ route('lang.switch', 'en') }}" method="GET" class="inline">
+                    <button type="submit" class="text-sm text-gray-700 hover:underline">EN</button>
+                </form>
+                <form action="{{ route('lang.switch', 'nl') }}" method="GET" class="inline ml-2">
+                    <button type="submit" class="text-sm text-gray-700 hover:underline">NL</button>
+                </form>
+                
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-red-600 font-bold hover:underline">
@@ -33,10 +42,8 @@
 
     <div class="py-10 bg-gray-100">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <!-- Filter and Sort Form -->
             <form method="GET" action="{{ route('homepage') }}" class="mb-6 flex justify-between items-center">
                 <div class="flex space-x-4">
-                    <!-- Category Filter -->
                     <div>
                         <label for="category" class="font-semibold text-gray-700">{{ __('messages.category') }}</label>
                         <select name="category" id="category" class="border p-2">
@@ -47,7 +54,6 @@
                         </select>
                     </div>
 
-                    <!-- Condition Filter -->
                     <div>
                         <label for="condition" class="font-semibold text-gray-700">{{ __('messages.condition') }}</label>
                         <select name="condition" id="condition" class="border p-2">
@@ -58,7 +64,6 @@
                         </select>
                     </div>
 
-                    <!-- Status Filter -->
                     <div>
                         <label for="status" class="font-semibold text-gray-700">Status</label>
                         <select name="status" id="status" class="border p-2">
@@ -69,7 +74,6 @@
                         </select>
                     </div>
 
-                    <!-- Sort By Filter -->
                     <div>
                         <label for="sort" class="font-semibold text-gray-700">{{ __('messages.sort_by') }}</label>
                         <select name="sort" id="sort" class="border p-2">
@@ -84,7 +88,6 @@
                 <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">{{ __('messages.filter') }}</button>
             </form>
 
-            <!-- Advertisements -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @foreach ($advertisements as $ad)
                     <a href="{{ route('advertisements.info', $ad->id) }}" class="block">
@@ -97,7 +100,6 @@
                 @endforeach
             </div>
 
-            <!-- Pagination Links -->
             <div class="mt-6">
                 {{ $advertisements->links('pagination::tailwind') }}
             </div>

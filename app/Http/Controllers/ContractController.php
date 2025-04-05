@@ -13,9 +13,9 @@ class ContractController extends Controller
     // Toon de contractenpagina
     public function index()
     {
-        $users = User::all();  // Haal alle gebruikers op
+        $users = User::all(); 
         //paginatiom at 6
-        $users = User::paginate(6); // Haal alle gebruikers op met paginatie
+        $users = User::paginate(6); 
         return view('admin.contracts.index', compact('users'));
     }
 // Upload een contract
@@ -28,7 +28,7 @@ public function upload(Request $request)
     ]);
 
     // Opslaan van het bestand
-    $path = $request->file('contract')->store('contracts', 'public'); // Sla het bestand op in de 'contracts' directory
+    $path = $request->file('contract')->store('contracts', 'public');
 
     // Sla het contract op in de database
     $contract = new Contract();
