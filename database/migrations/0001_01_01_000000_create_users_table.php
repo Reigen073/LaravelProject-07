@@ -17,7 +17,6 @@
                 $table->string('email')->unique();
                 $table->string('password');
                 $table->enum('role', [ 'gebruiker', 'particulier_adverteerder', 'zakelijke_adverteerder', 'admin' ])->default('gebruiker');
-                $table->json('dashboard_settings')->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             });
@@ -46,8 +45,5 @@
             Schema::dropIfExists('users');
             Schema::dropIfExists('password_reset_tokens');
             Schema::dropIfExists('sessions');
-            Schema::table('users', function (Blueprint $table) {
-                $table->dropColumn('dashboard_settings');
-            });
         }
     };

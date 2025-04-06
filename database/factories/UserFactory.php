@@ -30,11 +30,6 @@ class UserFactory extends Factory
             'password' => Hash::make(static::$password ??= 'password'),
             'remember_token' => Str::random(10),
             'role' => fake()->randomElement(['particulier_adverteerder', 'zakelijke_adverteerder']),
-            'dashboard_settings' => json_encode([
-                'theme' => 'light',
-                'language' => 'en',
-                'notifications' => true,
-            ]),
         ];
     }
 }

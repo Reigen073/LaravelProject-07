@@ -45,6 +45,7 @@ class DashboardSettingsController extends Controller
                 'text_color' => '#000000',
             ]);
         }
+        
 
         return response()->json($settings);
     }
