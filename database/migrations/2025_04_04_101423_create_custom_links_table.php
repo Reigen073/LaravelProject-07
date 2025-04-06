@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('custom_links', function (Blueprint $table) {
             $table->id();
-            $table->string('link_name'); // Custom name for the link
+            $table->string('link_name');
             $table->timestamps();
         });
     }

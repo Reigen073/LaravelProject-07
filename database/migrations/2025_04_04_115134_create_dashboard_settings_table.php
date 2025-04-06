@@ -1,6 +1,5 @@
 <?php
 
-// database/migrations/xxxx_xx_xx_xxxxxx_create_dashboard_settings_table.php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,7 +10,7 @@ class CreateDashboardSettingsTable extends Migration
     {
         Schema::create('dashboard_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // link to the user
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('show_ads')->default(true);
             $table->boolean('show_favorites')->default(true);
             $table->boolean('show_intro')->default(true);
