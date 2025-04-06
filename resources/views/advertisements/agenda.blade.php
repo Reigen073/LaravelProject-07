@@ -84,16 +84,16 @@
                                 <td class="px-6 py-4 text-gray-600">{{ \Carbon\Carbon::parse($advertisement->created_at)->format('d-m-Y') }}</td>
                                 <td class="px-6 py-4 text-gray-600">{{ \Carbon\Carbon::parse($advertisement->expires_at)->format('d-m-Y') }}</td>
                                 <td class="px-6 py-4 text-gray-600">
-                                <form action="{{ route('returns.store', $advertisement->id) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="mt-2">
-                                        <label for="image" class="block text-gray-700">{{ __('messages.upload_photo') }}</label>
-                                        <input type="hidden" name="reason" id="reason" class="w-full border p-2 rounded" value="rented" required>
-                                        <input type="file" name="image" id="image" class="border p-2 rounded">
-                                    </div>
-                                    <button type="submit" class="mt-3 bg-green-500 text-white px-4 py-2 rounded">{{ __('messages.return') }}</button>
-                                </form>
-                            </td>
+                                    <form action="{{ route('returns.store', $advertisement->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="mt-2">
+                                            <label for="image" class="block text-gray-700">{{ __('messages.upload_photo') }}</label>
+                                            <input type="hidden" name="reason" id="reason" class="w-full border p-2 rounded" value="rented" required>
+                                            <input type="file" name="image" id="image" class="border p-2 rounded" required>
+                                        </div>
+                                        <button type="submit" class="mt-3 bg-green-500 text-white px-4 py-2 rounded">{{ __('messages.return') }}</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -115,7 +115,7 @@
                                     <option value="">{{ __('messages.all') }}</option>
                                     <option value="games" {{ request('category') == 'games' ? 'selected' : '' }}>{{ __('messages.games') }}</option>
                                     <option value="household" {{ request('category') == 'household' ? 'selected' : '' }}>{{ __('messages.household') }}</option>
-                                    <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>Buiten</option>
+                                    <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>{{ __('messages.outdoor') }}</option>
                                 </select>
                             </div>
 

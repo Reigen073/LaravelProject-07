@@ -223,4 +223,5 @@ return [
     'copy_api_link' => 'Copy API link',
     'type' => 'Type',
     'status' => 'Status',
+    'create_bid' => 'Bid',
 ];

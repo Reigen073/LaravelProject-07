@@ -99,7 +99,7 @@ class ReturnController extends Controller
             ReturnRequest::create([
                 'advertisement_id' => $advertisement->id,
                 'user_id' => auth()->id(),
-                'image' => $request->imagePath,
+                'image' => $request->file('image') ? $request->file('image')->store('images', 'public') : null,
                 'reason' => $request->reason,
                 'status' => 'approved',
             ]);
