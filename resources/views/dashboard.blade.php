@@ -279,7 +279,6 @@
 
             <form id="dashboard-settings-form">
                 @csrf
-
                 <label class="block">
                     <input type="checkbox" name="show_ads" id="show_ads"> {{ __('messages.show_adverts') }}
                 </label>
@@ -385,8 +384,9 @@
 
                 document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
                 document.getElementById('text_color').value = settings.text_color ?? '#000000';
-                document.querySelectorAll('p').foreach(p => p.style.color = settings.text_color ?? '#000000');
-
+                document.querySelectorAll('p').forEach(p => {
+                    p.style.color = settings.text_color ?? '#000000';
+                });
                 applySettings(settings);
             }
 
