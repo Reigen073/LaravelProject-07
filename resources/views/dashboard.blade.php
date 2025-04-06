@@ -39,7 +39,7 @@
             @auth
                 @if (auth()->user()->role === 'admin')
                     <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
-                       href="http://laravelproject.test/admin/contracts">
+                       href="{{ route('returns.index') }}">
                         {{ __('messages.admin_contracts') }}
                     </a>
                 @endif
@@ -69,7 +69,7 @@
                 <div id="intro-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-4">{{ __('messages.introduction') }}</h3>
                 <p class="text-gray-700 mb-6">
-                    Welkom op je dashboard! Hier kun je je advertenties beheren, je favoriete advertenties bekijken en meer. Gebruik de onderstaande knoppen om advertenties te plaatsen, favorieten te beheren of retourverzoeken in te dienen. Als je je dashboard wilt aanpassen, klik dan op de instellingenknop.
+                {{ __('messages.introduction_description') }}
                 </p>
                 </div>
                 <div id="image-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -78,15 +78,12 @@
                 </div>
                 <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_adverts') }}</h3>
-                
-                    <!-- Search Bar -->
                     <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
-                        <input type="text" name="search" value="{{ request('search') }}" class="" placeholder="Zoek voor advertenties">
+                        <input type="text" name="search" value="{{ request('search') }}" class="" placeholder="{{__('messages.search_advert')}}">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
-                            zoek
+                        {{ __('messages.search') }}
                         </button>
                     </form>
-                
                     @if ($advertisements->isNotEmpty())
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach ($advertisements as $advertisement)
@@ -123,13 +120,11 @@
 
                 <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
-                
-                    <!-- Search Bar for Favorite Advertisements -->
                     <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
                         <input type="text" name="favorite_search" value="{{ request('favorite_search') }}" 
-                               placeholder="{{ __('zoek') }}" class="border p-2 rounded">
+                               placeholder="{{ __('messages.search_advert') }}" class="border p-2 rounded">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Zoek
+                            {{ __('messages.search') }}
                         </button>
                     </form>
                 
@@ -154,8 +149,6 @@
                                     </div>
                                 @endforeach
                             </div>
-                
-                            <!-- Pagination links for Favorite Ads -->
                             <div class="mt-4">
                                 {{ $favoriteAdvertisements->links() }}
                             </div>
@@ -188,15 +181,13 @@
                     class="form-control mb-2">
                 
 
-            <button onclick="copyApiLink()"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kopieer api </button>
+            <button onclick="copyApiLink()"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{__('messages.copy_api_link')}}</button>
                 </div>
-                    <!-- next -->
                     <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4">{{__('messages.your_contracts')}}</h3>
-                              <!-- Contract search form -->
+                            <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_contracts') }}</h3>
                             <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
                                 <input type="text" name="contract_search"  class="border rounded p-2 w-full sm:w-1/3" value="{{ request('contract_search') }}">
-                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 sm:mt-0">Zoek</button>
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 sm:mt-0">{{ __('messages.search') }}</button>
                             </form>
                             @auth
                             @if ($contracts->isNotEmpty())
@@ -216,8 +207,6 @@
                                 </a>
                             </li>
                                 @endforeach
-
-                                <!-- Pagination links -->
                                 <div class="mt-4">
                                     {{ $contracts->links() }}
                                 </div>
@@ -396,7 +385,7 @@
         function copyApiLink() {
         const link = document.getElementById("apiLink");
         link.select();
-        link.setSelectionRange(0, 99999); // For mobile devices
+        link.setSelectionRange(0, 99999);
         document.execCommand("copy");
         alert("Link copied to clipboard!");
     }
