@@ -34,11 +34,23 @@
                 <p class="text-gray-700 mb-4">{{ $advertisement->description }}</p>
                 <p class="text-2xl font-bold">€{{ number_format($advertisement->price, 2, ',', '.') }}</p>
 
-                <p class="text-sm text-gray-500 mt-4">{{ __('messages.type') }}: <span class="font-medium">{{ ucfirst($advertisement->type) }}</span></p>
-                <p class="text-sm text-gray-500 mt-4">{{ __('messages.category') }}: <span class="font-medium">{{ $advertisement->category }}</span></p>
-                <p class="text-sm text-gray-500 mt-1">{{ __('messages.status') }}: <span class="font-medium">{{ ucfirst($advertisement->status) }}</span></p>
-                <p class="text-sm text-gray-500 mt-1">{{ __('messages.condition') }}: <span class="font-medium">{{ $advertisement->condition }}</span></p>
-
+                <p class="text-sm text-gray-500 mt-4">
+                    {{ __('messages.type') }}: 
+                    <span class="font-medium">{{ __('messages.' . $advertisement->type) }}</span>
+                </p>
+                <p class="text-sm text-gray-500 mt-4">
+                    {{ __('messages.category') }}: 
+                    <span class="font-medium">{{ __('messages.' . $advertisement->category) }}</span>
+                </p>
+                <p class="text-sm text-gray-500 mt-1">
+                    {{ __('messages.status') }}: 
+                    <span class="font-medium">{{ __('messages.' . $advertisement->status) }}</span>
+                </p>
+                <p class="text-sm text-gray-500 mt-1">
+                    {{ __('messages.condition') }}: 
+                    <span class="font-medium">{{ __('messages.' . $advertisement->condition) }}</span>
+                </p>
+                
                 @if($advertisement->user)
                     <p class="text-sm text-gray-500 mt-1">
                         {{ __('messages.posted_by') }}: 
