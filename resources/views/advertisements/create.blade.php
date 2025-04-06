@@ -39,36 +39,36 @@
                 <div class="mt-4">
                     <label for="category">{{ __('messages.category') }}</label>
                     <select name="category" id="category" class="block w-full border p-2" required>
-                        <option value="games">Games</option>
-                        <option value="household">Huishoud</option>
-                        <option value="outdoor">Buiten</option>
+                        <option value="games">{{ __('messages.games') }}</option>
+                        <option value="household">{{ __('messages.household') }}</option>
+                        <option value="outdoor">{{ __('messages.outdoor') }}</option>
                     </select>
                 </div>
 
                 <div class="mt-4">
-                    <label for="type">Type</label>
+                    <label for="type">{{ __('messages.type') }}</label>
                     <select name="type" id="type" class="block w-full border p-2" required>
-                        <option value="buy">Koop</option>
-                        <option value="rent">Verhuur</option>
-                        <option value='bidding'>Bieden</option>
+                        <option value="buy">{{__('messages.buy')}}</option>
+                        <option value="rent">{{ __('messages.rent') }}</option>
+                        <option value='bidding'>{{__('messages.create_bid')}}</option>
                     </select>
                 </div>
 
                 <div class="mt-4">
-                    <label for="status">Status</label>
+                    <label for="status">{{__('messages.status')}}</label>
                     <select name="status" id="status" class="block w-full border p-2" required>
-                        <option value="available">Beschikbaar</option>
-                        <option value="rented">Verhuurd</option>
-                        <option value="sold">Verkocht</option>
+                        <option value="available">{{__('messages.available')}}</option>
+                        <option value="rented">{{ __('messages.rented') }}</option>
+                        <option value="sold">{{ __('messages.sold')}}</option>
                     </select>
                 </div>
 
                 <div class="mt-4">
                     <label for="condition">{{ __('messages.condition') }}</label>
                     <select name="condition" id="condition" class="block w-full border p-2" required>
-                        <option value="new">Nieuw</option>
-                        <option value="used">Gebruikt</option>
-                        <option value="refurbished">Gereviseerd</option>
+                        <option value="new">{{ __('messages.new') }}</option>
+                        <option value="used">{{__('messages.used')}}</option>
+                        <option value="refurbished">{{__('messages.refurbished')}}</option>
                     </select>
                 </div>
 

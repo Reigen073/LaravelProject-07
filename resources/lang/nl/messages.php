@@ -219,4 +219,8 @@ return [
     'search_advert' => 'Zoek advertentie',
     'search' => 'Zoek',
     'search_contract' => 'Zoek contract',
+    'copy_api_link' => 'Kopieer API-link',
+    'types' => 'Type',
+    'status' => 'Status',
+    'create_bid' => 'Bieden',
 ];

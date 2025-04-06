@@ -220,4 +220,7 @@ return [
     'search_advert' => 'Search advertisement',
     'search' => 'Search',
     'search_contract' => 'Search contract',
+    'copy_api_link' => 'Copy API link',
+    'type' => 'Type',
+    'status' => 'Status',
 ];
