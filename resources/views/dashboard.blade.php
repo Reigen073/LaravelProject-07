@@ -180,6 +180,10 @@
                            {{ __("messages.your_link_is") }} <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
                         </p>
                     @endif
+                    <input type="text" id="apiLink" value="http://laravelproject.test/api/advertisements?user_id={{ auth()->id() }}&email=user@example.com&password=YourPasswordHere" readonly class="form-control mb-2">
+
+
+            <button onclick="copyApiLink()"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kopieer api </button>
                 </div>
                     <!-- next -->
                     <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -384,5 +388,13 @@
 
             loadSettings();
         });
+        function copyApiLink() {
+        const link = document.getElementById("apiLink");
+        link.select();
+        link.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand("copy");
+        alert("Link copied to clipboard!");
+    }
+
     </script>
 </x-app-layout>
