@@ -4,23 +4,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AdvertisementAPIController;
 use App\Http\Controllers\Api\AuthController;
+use App\Models\Advertisement;
+use App\Models\User;
 
     Route::get('advertisements', [AdvertisementAPIController::class, 'index']);
     Route::post('login', function (Request $request) {
-        $user = \App\Models\User::where('email', $request->email)->first();
-    
-        // Check if user exists and password is correct
+        $user = User::where('email', $request->email)->first();
         if (!$user || !\Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-    
-        // Generate token
         $token = $user->createToken('API Token')->plainTextToken;
-    
-        // Fetch advertisements for the authenticated user
-        $advertisements = \App\Models\Advertisement::where('user_id', $user->id)->get();
-    
-        // Return token and advertisements in response
+        $advertisements = Advertisement::where('user_id', $user->id)->get();
         return response()->json([
             'token' => $token,
             'advertisements' => $advertisements

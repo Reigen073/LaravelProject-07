@@ -20,8 +20,8 @@ class ContractController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'contract' => 'required|file|mimes:pdf|max:10240', // Alleen PDF, maximaal 10MB
-            'contract_name' => 'required|string|max:255', // Name of the contract
+            'contract' => 'required|file|mimes:pdf|max:10240',
+            'contract_name' => 'required|string|max:255',
 
         ]);
 

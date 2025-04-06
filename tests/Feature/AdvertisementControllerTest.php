@@ -32,8 +32,7 @@ class AdvertisementControllerTest extends DuskTestCase
         parent::tearDown();
     }
 
-    /** @test */
-    public function user_can_delete_their_own_advertisement()
+    public function test_user_can_delete_their_own_advertisement()
     {
         $user = User::factory()->create();
         $advertisement = Advertisement::factory()->create(['user_id' => $user->id]);
@@ -45,8 +44,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $this->assertDatabaseMissing('advertisements', ['id' => $advertisement->id]);
     }
 
-    /** @test */
-    public function user_can_view_advertisements_index()
+    public function test_user_can_view_advertisements_index()
     {
         $advertisements = Advertisement::factory()->count(3)->create();
 
@@ -57,8 +55,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $response->assertViewHas('advertisements');
     }
 
-    /** @test */
-    public function authenticated_user_can_create_advertisement()
+    public function test_authenticated_user_can_create_advertisement()
     {
         $this->withoutMiddleware();
         Storage::fake('public');
@@ -89,8 +86,7 @@ class AdvertisementControllerTest extends DuskTestCase
         Storage::disk('public')->assertExists('images/' . $file->hashName());
     }
 
-    /** @test */
-    public function user_can_edit_their_own_advertisement()
+    public function test_user_can_edit_their_own_advertisement()
     {
         $user = User::factory()->create();
         $advertisement = Advertisement::factory()->create(['user_id' => $user->id]);
@@ -103,8 +99,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $response->assertViewHas('advertisement');
     }
 
-    /** @test */
-    public function user_cannot_edit_other_users_advertisement()
+    public function test_user_cannot_edit_other_users_advertisement()
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -117,8 +112,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $response->assertSessionHas('error');
     }
 
-    /** @test */
-    public function user_can_place_a_bid_on_an_advertisement()
+    public function test_user_can_place_a_bid_on_an_advertisement()
     {
         $user = User::factory()->create(['id' => 998]);
         $advertisementOwner = User::factory()->create(['id' => 999]);
@@ -138,8 +132,8 @@ class AdvertisementControllerTest extends DuskTestCase
             'bid_amount' => 50,
         ]);
     }
-    /** @test */
-    public function user_can_buy_an_advertisement()
+
+    public function test_user_can_buy_an_advertisement()
     {
         $buyer = User::factory()->create();
         $seller = User::factory()->create();
@@ -156,8 +150,7 @@ class AdvertisementControllerTest extends DuskTestCase
         ]);
     }
 
-    /** @test */
-    public function user_cannot_buy_own_advertisement()
+    public function test_user_cannot_buy_own_advertisement()
     {
         $user = User::factory()->create();
         $advertisement = Advertisement::factory()->create(['user_id' => $user->id]);
@@ -168,8 +161,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $response->assertSessionHas('error');
     }
 
-    /** @test */
-    public function user_can_rent_an_advertisement()
+    public function test_user_can_rent_an_advertisement()
     {
         $renter = User::factory()->create();
         $owner = User::factory()->create();
@@ -185,8 +177,8 @@ class AdvertisementControllerTest extends DuskTestCase
             'acquirer_user_id' => $renter->id,
         ]);
     }
-    /** @test */
-    public function owner_can_accept_a_bid()
+
+    public function test_owner_can_accept_a_bid()
     {
         $owner = User::factory()->create();
         $bidder = User::factory()->create();
@@ -204,8 +196,7 @@ class AdvertisementControllerTest extends DuskTestCase
         $this->assertDatabaseHas('advertisements', ['id' => $advertisement->id, 'status' => 'sold']);
     }
 
-    /** @test */
-    public function owner_can_reject_a_bid()
+    public function test_owner_can_reject_a_bid()
     {
         $owner = User::factory()->create();
         $advertisement = Advertisement::factory()->create(['user_id' => $owner->id]);

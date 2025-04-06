@@ -38,13 +38,11 @@ class Advertisement extends Model
     {
         $user = auth()->user();
         
-        // If the advertisement is already favorited, remove it
         if ($user->favorites()->where('advertisement_id', $advertisement->id)->exists()) {
             $user->favorites()->detach($advertisement);
             return back()->with('success', 'Advertentie uit je favorieten verwijderd!');
         }
         
-        // Otherwise, add it to favorites
         $user->favorites()->attach($advertisement);
         return back()->with('success', 'Advertentie toegevoegd aan je favorieten!');
     }

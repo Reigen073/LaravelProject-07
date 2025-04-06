@@ -13,10 +13,10 @@ use App\Models\Advertisement;
 use App\Http\Controllers\DashboardSettingsController;
 use App\Models\CustomLink;
 use App\Http\Controllers\CustomLinkController;
-use App\Http\Controllers\ContractController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Models\Contract;
 use App\Http\Middleware\SetLocale;
+use App\Http\Controllers\ContractController;
 
 Route::get('/', [AdvertisementController::class, 'index'])->name('homepage');
 Route::middleware(['auth'])->group(function () {
@@ -88,13 +88,15 @@ Route::get('/lang/{locale}', function ($locale) {
 
     return redirect()->back();
 })->middleware(SetLocale::Class)->name('lang.switch');
-Route::get('/{link_name}', [CustomLinkController::class, 'handleLinkName']);
-
-Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');
 
 Route::middleware(['auth', RoleCheck::class . ':admin'])->group(function () {
     Route::get('/admin/contracts', [ContractController::class, 'index'])->name('contracts.index');
     Route::post('/admin/contracts/upload', [ContractController::class, 'upload'])->name('contracts.upload');
 });
+
+Route::get('/{link_name}', [CustomLinkController::class, 'handleLinkName']);
+
+Route::post('/custom-link', [CustomLinkController::class, 'store'])->name('custom-link.store');
+
     
 require __DIR__.'/auth.php';

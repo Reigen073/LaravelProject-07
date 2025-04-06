@@ -27,8 +27,7 @@ class ReturnControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
-    public function user_can_view_return_request(){
+    public function test_user_can_view_return_request(){
         $this->withoutMiddleware();
         $this->user = User::factory()->create();
         $advertisement = Advertisement::factory()->create([
@@ -48,8 +47,7 @@ class ReturnControllerTest extends TestCase
         $response->assertViewIs('returns.index');
     }
 
-    /** @test */
-    public function user_can_create_return_request_with_image()
+    public function test_user_can_create_return_request_with_image()
     {
         Storage::fake('public');
 
@@ -77,9 +75,7 @@ class ReturnControllerTest extends TestCase
         Storage::disk('public')->assertExists('returns/' . $image->hashName());
     }
 
-
-    /** @test */
-    public function user_cannot_create_return_request_for_non_owned_product()
+    public function test_user_cannot_create_return_request_for_non_owned_product()
     {
         $this->withoutMiddleware();
         $this->user = User::factory()->create();
@@ -94,8 +90,7 @@ class ReturnControllerTest extends TestCase
         $response->assertSessionHas('error');
     }
 
-    /** @test */
-    public function user_can_approve_return_request()
+    public function test_user_can_approve_return_request()
     {
         $this->withoutMiddleware();
         $this->user = User::factory()->create();
@@ -119,8 +114,7 @@ class ReturnControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function user_can_reject_return_request()
+    public function test_user_can_reject_return_request()
     {
         $this->withoutMiddleware();
         $this->user = User::factory()->create(); 
@@ -143,6 +137,4 @@ class ReturnControllerTest extends TestCase
             'status' => 'rejected',
         ]);
     }
-
-
 }

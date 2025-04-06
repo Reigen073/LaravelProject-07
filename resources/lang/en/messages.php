@@ -215,4 +215,9 @@ return [
     'review_placed' => 'Review placed successfully.',
     'page_not_found' => 'Page not found',
     'no_permissions' => 'You do not have permission to execute this action.',
+    'contract_name' => 'Contract Name',
+    'introduction_description' => 'Welcome to your dashboard! Here you can manage your ads, view your favorite ads, and more. Use the buttons below to post ads, manage favorites, or submit return requests. If you would like to customize your dashboard, click the settings button.',
+    'search_advert' => 'Search advertisement',
+    'search' => 'Search',
+    'search_contract' => 'Search contract',
 ];

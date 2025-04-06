@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Hash; // Add this line
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,7 +46,6 @@ class User extends Authenticatable
         ];
     }
 
-    // Automatically hash password before saving
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
@@ -70,7 +68,7 @@ class User extends Authenticatable
     }
     public function contracts()
     {
-        return $this->hasMany(Contract::class); // of hoe je relatie ook is gedefinieerd
+        return $this->hasMany(Contract::class); 
     }
 
 }

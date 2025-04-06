@@ -27,8 +27,7 @@ class ContractControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
-    public function it_shows_contracts_index_page_with_paginated_users()
+    public function test_it_shows_contracts_index_page_with_paginated_users()
     {
         User::factory()->count(10)->create();
         $user = User::factory()->create([
@@ -42,8 +41,7 @@ class ContractControllerTest extends TestCase
         $response->assertViewHas('users');
     }
 
-    /** @test */
-    public function it_allows_valid_contract_upload()
+    public function test_it_allows_valid_contract_upload()
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $user = User::factory()->create();
@@ -55,6 +53,7 @@ class ContractControllerTest extends TestCase
         $response = $this->post(route('contracts.upload'), [
             'user_id' => $user->id,
             'contract' => $file,
+            'contract_name' => 'Contract for ' . $user->name,
         ]);
 
         $response->assertRedirect(route('contracts.index'));
@@ -67,8 +66,7 @@ class ContractControllerTest extends TestCase
         Storage::disk('public')->assertExists('contracts/' . $file->hashName());
     }
 
-    /** @test */
-    public function it_fails_validation_when_no_file_uploaded()
+    public function test_it_fails_validation_when_no_file_uploaded()
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $user = User::factory()->create();
@@ -82,8 +80,7 @@ class ContractControllerTest extends TestCase
         $response->assertSessionHasErrors('contract');
     }
 
-    /** @test */
-    public function it_fails_validation_when_wrong_file_type_uploaded()
+    public function test_it_fails_validation_when_wrong_file_type_uploaded()
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $user = User::factory()->create();

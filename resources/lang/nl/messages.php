@@ -214,5 +214,9 @@ return [
     'review_placed' => 'Beoordeling succesvol geplaatst.',
     'page_not_found' => 'Pagina niet gevonden',
     'no_permissions' => 'Je hebt geen toestemming om deze actie uit te voeren.',
-
+    'contract_name' => 'Contract naam',
+    'introduction_description' => 'Welkom op je dashboard! Hier kun je je advertenties beheren, je favoriete advertenties bekijken en meer. Gebruik de onderstaande knoppen om advertenties te plaatsen, favorieten te beheren of retourverzoeken in te dienen. Als je je dashboard wilt aanpassen, klik dan op de instellingenknop.',
+    'search_advert' => 'Zoek advertentie',
+    'search' => 'Zoek',
+    'search_contract' => 'Zoek contract',
 ];

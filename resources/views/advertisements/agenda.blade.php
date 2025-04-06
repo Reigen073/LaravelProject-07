@@ -171,7 +171,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="w-full md:w-1/2 px-4">
                 <div class="bg-white shadow-lg rounded-lg p-6">
                     <h3 class="text-xl font-semibold mb-4">{{ __('messages.rented_out_products') }}</h3>

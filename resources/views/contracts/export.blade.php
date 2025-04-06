@@ -1,5 +1,4 @@
 
-<!-- resources/views/contracts/export.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +26,6 @@
         <p><strong>User ID:</strong> {{ $contract->user_id }}</p>
         <p><strong>File Path:</strong> {{ $contract->file_path }}</p>
         <p><strong>Upload Date:</strong> {{ $contract->created_at->format('d-m-Y H:i:s') }}</p>
-        <!-- Add other contract details here as needed -->
     </div>
 </body>
 </html>

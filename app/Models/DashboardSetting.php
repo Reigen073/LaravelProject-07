@@ -1,6 +1,5 @@
 <?php
 
-// app/Models/DashboardSetting.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +21,6 @@ class DashboardSetting extends Model
         'text_color',
     ];
 
-    // A dashboard setting belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);

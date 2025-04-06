@@ -15,7 +15,6 @@
 
             <form action="{{ route('contracts.upload') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
                 <div class="mb-4">
                     <label for="user_id" class="block text-sm font-medium text-gray-700">{{ __('messages.select_user') }}</label>
                     <select name="user_id" id="user_id" class="block w-full mt-1">
@@ -29,7 +28,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="contract_name" class="block text-sm font-medium text-gray-700">{{ __('contract name') }}</label>
+                    <label for="contract_name" class="block text-sm font-medium text-gray-700">{{ __('messages.contract_name') }}</label>
                     <input type="text" name="contract_name" id="contract_name" class="block w-full mt-1" required>
                     @error('contract_name')
                         <span class="text-red-500 text-sm">{{ $message }}</span>

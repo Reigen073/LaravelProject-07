@@ -12,8 +12,7 @@ class FavoriteControllerTest extends DuskTestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function user_can_add_advertisement_to_favorites()
+    public function test_user_can_add_advertisement_to_favorites()
     {
         $this->withoutMiddleware();
         $this->user = User::factory()->create();
@@ -25,8 +24,7 @@ class FavoriteControllerTest extends DuskTestCase
         $this->assertTrue($this->user->favorites()->where('advertisement_id', $advertisement->id)->exists());
     }
 
-    /** @test */
-    public function user_can_remove_advertisement_from_favorites()
+    public function test_user_can_remove_advertisement_from_favorites()
     {
         $this->withoutMiddleware();
         $this->user = User::factory()->create();
