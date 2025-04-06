@@ -79,7 +79,7 @@
                         <select name="sort" id="sort" class="border p-2">
                             <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>{{__('messages.price_asc')}}</option>
                             <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>{{__('messages.price_desc')}}</option>
-                            <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>{{__('messages.title_asc')}}/option>
+                            <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>{{__('messages.title_asc')}}</option>
                             <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>{{__('messages.title_desc')}}</option>
                         </select>
                     </div>
