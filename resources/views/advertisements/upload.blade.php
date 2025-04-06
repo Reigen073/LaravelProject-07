@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded w-full">{{ __('messages.upload') }}</button>
+                    <button href="{{ route('dashboard') }}"  type="submit" class="px-4 py-2 bg-blue-600 text-white rounded w-full">{{ __('messages.upload') }}</button>
                 </div>
             </form>
         </div>
