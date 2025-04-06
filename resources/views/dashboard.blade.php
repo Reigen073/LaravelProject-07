@@ -66,69 +66,18 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div id="intro-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">{{ __('messages.introduction') }}</h3>
-                <p class="text-gray-700 mb-6">
-                {{ __('messages.introduction_description') }}
-                </p>
-                </div>
-                <div id="image-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.image') }}</h3>
-                    <img src="{{ asset('images/sky.jpg') }}" alt="Sky Image">
-                </div>
-                <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_adverts') }}</h3>
-                    <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
-                        <input type="text" name="search" value="{{ request('search') }}" class="" placeholder="{{__('messages.search_advert')}}">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
-                        {{ __('messages.search') }}
-                        </button>
-                    </form>
-                    @if ($advertisements->isNotEmpty())
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            @foreach ($advertisements as $advertisement)
-                                <div class="border p-4 rounded-lg shadow-md">
-                                    @if ($advertisement->image)
-                                        <img src="{{ asset('storage/' . $advertisement->image) }}" 
-                                             alt="{{ $advertisement->title }}" 
-                                             class="w-full h-48 object-contain bg-gray-200 rounded-lg mb-4">
-                                    @endif
-                                    <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
-                                    <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>
-                                    <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
-                                    <div class="mt-4 flex gap-2">
-                                        <a href="{{ route('advertisements.info', $advertisement->id) }}"
-                                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
-                                        @if(auth()->check() && auth()->id() === $advertisement->user_id)
-                                            <a href="{{ route('advertisements.edit', $advertisement->id) }}" 
-                                               class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                                                {{ __('messages.edit') }}
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                
-                        <div class="mt-4">
-                            {{ $advertisements->links() }}
-                        </div>
-                    @else
-                        <p>{{ __('messages.no_adverts') }}.</p>
-                    @endif
-                </div>
+            @auth
+                @if (auth()->user()->role === 'gebruiker')
+                    <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
+                        <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                            <input type="text" name="favorite_search" value="{{ request('favorite_search') }}" 
+                                   placeholder="{{ __('messages.search_advert') }}" class="border p-2 rounded">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('messages.search') }}
+                            </button>
+                        </form>
 
-                <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
-                    <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
-                        <input type="text" name="favorite_search" value="{{ request('favorite_search') }}" 
-                               placeholder="{{ __('messages.search_advert') }}" class="border p-2 rounded">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {{ __('messages.search') }}
-                        </button>
-                    </form>
-                
-                    @auth
                         @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach ($favoriteAdvertisements as $advertisement)
@@ -155,80 +104,174 @@
                         @else
                             <p>{{ __('messages.no_favorite_adverts') }}</p>
                         @endif
-                    @endauth
-                </div>
-                
-                <div id="CustomLink-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <form action="{{ route('custom-link.store') }}" method="POST">
-                        @csrf
-                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.link_name') }}</h3>
-                        <input type="text" name="link_name" id="link_name" required>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                           {{ __('messages.save_link') }}
-                        </button>
-                    </form>
-                
-                    @if(session('link_name'))
-                        <p class="text-green-500 mt-4">
-                           {{ __("messages.your_link_is") }} <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
-                        </p>
-                    @endif
-                    <input 
-                    type="text" 
-                    id="apiLink" 
-                    value="{{ url('/api/advertisements') }}?user_id={{ auth()->id() }}&email=user@example.com&password=YourPasswordHere" 
-                    readonly 
-                    class="form-control mb-2">
-                
-
-            <button onclick="copyApiLink()"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{__('messages.copy_api_link')}}</button>
-                </div>
-                    <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_contracts') }}</h3>
-                            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
-                                <input type="text" name="contract_search"  class="border rounded p-2 w-full sm:w-1/3" value="{{ request('contract_search') }}">
-                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 sm:mt-0">{{ __('messages.search') }}</button>
-                            </form>
-                            @auth
-                            @if ($contracts->isNotEmpty())
-                                <ul class="space-y-2">
-                                 @foreach ($contracts as $contract)
-                            <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
-                                <span> {{ $contract->contract_name  }}</span>
-                                <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    📄 {{ __('messages.show_advert') }}
-                                </a>
-
-                                <a href="{{ asset('storage/' . $contract->file_path) }}" 
-                                download="{{ basename($contract->file_path) }}"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                    📤 {{ __('messages.download_contract') }}
-                                </a>
-                            </li>
+                    </div>
+                @else
+                    <div id="intro-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">{{ __('messages.introduction') }}</h3>
+                    <p class="text-gray-700 mb-6">
+                    {{ __('messages.introduction_description') }}
+                    </p>
+                    </div>
+                    <div id="image-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.image') }}</h3>
+                        <img src="{{ asset('images/sky.jpg') }}" alt="Sky Image">
+                    </div>
+                    <div id="ads-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_adverts') }}</h3>
+                        <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                            <input type="text" name="search" value="{{ request('search') }}" class="" placeholder="{{__('messages.search_advert')}}">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
+                            {{ __('messages.search') }}
+                            </button>
+                        </form>
+                        @if ($advertisements->isNotEmpty())
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @foreach ($advertisements as $advertisement)
+                                    <div class="border p-4 rounded-lg shadow-md">
+                                        @if ($advertisement->image)
+                                            <img src="{{ asset('storage/' . $advertisement->image) }}" 
+                                                alt="{{ $advertisement->title }}" 
+                                                class="w-full h-48 object-contain bg-gray-200 rounded-lg mb-4">
+                                        @endif
+                                        <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
+                                        <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>
+                                        <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
+                                        <div class="mt-4 flex gap-2">
+                                            <a href="{{ route('advertisements.info', $advertisement->id) }}"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
+                                            @if(auth()->check() && auth()->id() === $advertisement->user_id)
+                                                <a href="{{ route('advertisements.edit', $advertisement->id) }}" 
+                                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                                                    {{ __('messages.edit') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
                                 @endforeach
-                                <div class="mt-4">
-                                    {{ $contracts->links() }}
+                            </div>
+                    
+                            <div class="mt-4">
+                                {{ $advertisements->links() }}
+                            </div>
+                        @else
+                            <p>{{ __('messages.no_adverts') }}</p>
+                        @endif
+                    </div>
+
+                    <div id="favorites-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_favorite_advertisements') }}</h3>
+                        <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                            <input type="text" name="favorite_search" value="{{ request('favorite_search') }}" 
+                                placeholder="{{ __('messages.search_advert') }}" class="border p-2 rounded">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('messages.search') }}
+                            </button>
+                        </form>
+                    
+                        @auth
+                            @if (auth()->user()->favorites && auth()->user()->favorites->isNotEmpty())
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @foreach ($favoriteAdvertisements as $advertisement)
+                                        <div class="border p-4 rounded-lg shadow-md">
+                                            <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
+                                            <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>
+                                            <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
+                                            <div class="mt-4">
+                                                <a href="{{ route('advertisements.info', $advertisement->id) }}"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
+                                                <form action="{{ route('advertisements.favorite', $advertisement->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="text-red-500 font-bold mt-4">
+                                                        ❌ {{ __('messages.remove_favorite') }}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                @else
-                                <p>{{ __('messages.no_contracts') }}</p>
+                                <div class="mt-4">
+                                    {{ $favoriteAdvertisements->links() }}
+                                </div>
+                            @else
+                                <p>{{ __('messages.no_favorite_adverts') }}</p>
                             @endif
                         @endauth
-                        
-                            </div>
-                        </div>
-                        
                     </div>
+                    
+                    <div id="CustomLink-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <form action="{{ route('custom-link.store') }}" method="POST">
+                            @csrf
+                            <h3 class="text-lg font-semibold mb-4">{{ __('messages.link_name') }}</h3>
+                            <input type="text" name="link_name" id="link_name" required>
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('messages.save_link') }}
+                            </button>
+                        </form>
+                    
+                        @if(session('link_name'))
+                            <p class="text-green-500 mt-4">
+                            {{ __("messages.your_link_is") }} <a href="{{ url(session('link_name')) }}" class="text-green-500">{{ url(session('link_name')) }}</a>
+                            </p>
+                        @endif
+                        <input 
+                        type="text" 
+                        id="apiLink" 
+                        value="{{ url('/api/advertisements') }}?user_id={{ auth()->id() }}&email=user@example.com&password=YourPasswordHere" 
+                        readonly 
+                        class="form-control mb-2">
+                    
+
+                <button onclick="copyApiLink()"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{__('messages.copy_api_link')}}</button>
+                    </div>
+                        <div id="contract-section" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4">{{ __('messages.your_contracts') }}</h3>
+                                <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                                    <input type="text" name="contract_search"  class="border rounded p-2 w-full sm:w-1/3" value="{{ request('contract_search') }}">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 sm:mt-0">{{ __('messages.search') }}</button>
+                                </form>
+                                @auth
+                                @if ($contracts->isNotEmpty())
+                                    <ul class="space-y-2">
+                                    @foreach ($contracts as $contract)
+                                <li class="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
+                                    <span> {{ $contract->contract_name  }}</span>
+                                    <a href="{{ asset('storage/' . $contract->file_path) }}" target="_blank"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        📄 {{ __('messages.show_advert') }}
+                                    </a>
+
+                                    <a href="{{ asset('storage/' . $contract->file_path) }}" 
+                                    download="{{ basename($contract->file_path) }}"
+                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        📤 {{ __('messages.download_contract') }}
+                                    </a>
+                                </li>
+                                    @endforeach
+                                    <div class="mt-4">
+                                        {{ $contracts->links() }}
+                                    </div>
+                                    @else
+                                    <p>{{ __('messages.no_contracts') }}</p>
+                                @endif
+                            @endauth
+                            
+                                </div>
+                            </div>
+                            
+                        </div>
+                @endif
+            @endauth
             </div>
         </div>
     </div>
-
-    <div class="flex justify-end pr-6 mb-4">
-        <button id="customize-btn"
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            ⚙️ {{ __('messages.customize_dashboard') }}
-        </button>
-    </div>
+    @auth
+        @if (auth()->user()->role !== 'gebruiker')
+            <div class="flex justify-end pr-6 mb-4">
+                <button id="customize-btn"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    ⚙️ {{ __('messages.customize_dashboard') }}
+                </button>
+            </div>
 
     <div id="dashboard-settings-modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 items-center justify-center hidden">
         <div class="bg-white p-6 rounded-lg w-full max-w-lg space-y-4">
@@ -274,6 +317,8 @@
             </form>
         </div>
     </div>
+    @endif
+    @endauth
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('dashboard-settings-modal');
