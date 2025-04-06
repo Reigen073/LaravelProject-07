@@ -39,7 +39,7 @@
             @auth
                 @if (auth()->user()->role === 'admin')
                     <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
-                       href="{{ route('returns.index') }}">
+                       href="{{ route('contracts.index') }}">
                         {{ __('messages.admin_contracts') }}
                     </a>
                 @endif
