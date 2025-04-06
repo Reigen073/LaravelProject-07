@@ -48,9 +48,9 @@
                         <label for="category" class="font-semibold text-gray-700">{{ __('messages.category') }}</label>
                         <select name="category" id="category" class="border p-2">
                             <option value="">{{ __('messages.all') }}</option>
-                            <option value="games" {{ request('category') == 'games' ? 'selected' : '' }}>Games</option>
+                            <option value="games" {{ request('category') == 'games' ? 'selected' : '' }}>{{__('messages.games')}}</option>
                             <option value="household" {{ request('category') == 'household' ? 'selected' : '' }}>{{ __('messages.household') }}</option>
-                            <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>Buiten</option>
+                            <option value="outdoor" {{ request('category') == 'outdoor' ? 'selected' : '' }}>{{ __('messages.outdoor') }}</option>
                         </select>
                     </div>
 
