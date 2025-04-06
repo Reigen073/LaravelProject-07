@@ -108,7 +108,7 @@
                 @else
                     <div id="intro-section"class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">{{ __('messages.introduction') }}</h3>
-                    <p class="text-gray-700 mb-6">
+                    <p class=" mb-6">
                     {{ __('messages.introduction_description') }}
                     </p>
                     </div>
@@ -134,8 +134,8 @@
                                                 class="w-full h-48 object-contain bg-gray-200 rounded-lg mb-4">
                                         @endif
                                         <h4 class="font-bold text-lg">{{ $advertisement->title }}</h4>
-                                        <p class="text-gray-700">{{ Str::limit($advertisement->description, 100) }}</p>
-                                        <p class="text-gray-900 font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
+                                        <p class="">{{ Str::limit($advertisement->description, 100) }}</p>
+                                        <p class=" font-semibold">€{{ number_format($advertisement->price, 2) }}</p>
                                         <div class="mt-4 flex gap-2">
                                             <a href="{{ route('advertisements.info', $advertisement->id) }}"
                                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{{ __('messages.show_advert') }}</a>
@@ -385,6 +385,7 @@
 
                 document.getElementById('bg_color').value = settings.bg_color ?? '#ffffff';
                 document.getElementById('text_color').value = settings.text_color ?? '#000000';
+                document.querySelectorAll('p').foreach(p => p.style.color = settings.text_color ?? '#000000');
 
                 applySettings(settings);
             }
